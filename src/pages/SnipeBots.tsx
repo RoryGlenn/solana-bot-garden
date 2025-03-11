@@ -122,7 +122,7 @@ const SnipeBots = () => {
             <div>
               <h1 className="text-3xl font-bold tracking-tight flex items-center">
                 <Zap className="mr-3 h-7 w-7 text-solana" />
-                Snipe Bots
+                Snipe Bot
               </h1>
               <p className="text-muted-foreground">
                 Quickly buy tokens as soon as liquidity is added
@@ -156,7 +156,7 @@ const SnipeBots = () => {
               ) : (
                 <div className="col-span-3 text-center py-12">
                   <Zap className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">No Snipe Bots Yet</h3>
+                  <h3 className="text-xl font-semibold mb-2">No Snipe Bot Yet</h3>
                   <p className="text-muted-foreground mb-6">Create your first snipe bot to quickly buy tokens as soon as liquidity is added.</p>
                   <Button 
                     className="bg-gradient-to-r from-solana to-accent hover:shadow-lg transition-all duration-300"

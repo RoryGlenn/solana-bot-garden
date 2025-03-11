@@ -35,11 +35,11 @@ const BotCard = ({ bot, onPlay, onPause, onStop, onDelete, onViewDetails }: BotC
   const getStatusBadgeStyles = (status: string) => {
     switch (status) {
       case 'active':
-        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
+        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
       case 'paused':
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300";
       case 'stopped':
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
+        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300";
       default:
         return "";
     }
@@ -55,13 +55,13 @@ const BotCard = ({ bot, onPlay, onPause, onStop, onDelete, onViewDetails }: BotC
   };
 
   return (
-    <Card className="overflow-hidden transition-all duration-300 hover:shadow-md dark:hover:shadow-none dark:hover:bg-card/80 hover:-translate-y-1 border backdrop-blur-sm bg-white/90 dark:bg-black/30">
+    <Card className="overflow-hidden transition-all duration-300 hover:shadow-md dark:hover:shadow-none dark:hover:bg-card/90 hover:-translate-y-1 border border-sidebar-border glass-dark">
       <CardHeader className="p-4 pb-2">
         <div className="flex justify-between items-start">
           <div>
             <CardTitle className="text-lg font-medium">{bot.name}</CardTitle>
             <CardDescription className="flex items-center mt-1">
-              <Badge variant="outline" className="mr-2 flex items-center gap-1">
+              <Badge variant="outline" className="mr-2 flex items-center gap-1 border-sidebar-border">
                 {getBotTypeIcon(bot.type)}
                 {bot.type.charAt(0).toUpperCase() + bot.type.slice(1).replace('-', ' ')}
               </Badge>
@@ -95,21 +95,21 @@ const BotCard = ({ bot, onPlay, onPause, onStop, onDelete, onViewDetails }: BotC
       <CardFooter className="p-4 pt-0 flex justify-between">
         <div className="flex space-x-2">
           {bot.status !== 'active' && (
-            <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => onPlay(bot.id)}>
+            <Button variant="outline" size="icon" className="h-8 w-8 border-sidebar-border bg-background/20" onClick={() => onPlay(bot.id)}>
               <PlayCircle className="h-4 w-4" />
             </Button>
           )}
           {bot.status === 'active' && (
-            <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => onPause(bot.id)}>
+            <Button variant="outline" size="icon" className="h-8 w-8 border-sidebar-border bg-background/20" onClick={() => onPause(bot.id)}>
               <PauseCircle className="h-4 w-4" />
             </Button>
           )}
           {bot.status !== 'stopped' && (
-            <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => onStop(bot.id)}>
+            <Button variant="outline" size="icon" className="h-8 w-8 border-sidebar-border bg-background/20" onClick={() => onStop(bot.id)}>
               <StopCircle className="h-4 w-4" />
             </Button>
           )}
-          <Button variant="outline" size="icon" className="h-8 w-8 text-destructive" onClick={() => onDelete(bot.id)}>
+          <Button variant="outline" size="icon" className="h-8 w-8 text-destructive border-sidebar-border bg-background/20" onClick={() => onDelete(bot.id)}>
             <Trash2 className="h-4 w-4" />
           </Button>
         </div>

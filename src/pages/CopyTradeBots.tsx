@@ -106,7 +106,7 @@ const CopyTradeBots = () => {
             <div>
               <h1 className="text-3xl font-bold tracking-tight flex items-center">
                 <Copy className="mr-3 h-7 w-7 text-solana" />
-                Copy Trade Bots
+                Copy Trade Bot
               </h1>
               <p className="text-muted-foreground">
                 Automatically copy trades from successful wallets
@@ -140,7 +140,7 @@ const CopyTradeBots = () => {
               ) : (
                 <div className="col-span-3 text-center py-12">
                   <Copy className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">No Copy Trade Bots Yet</h3>
+                  <h3 className="text-xl font-semibold mb-2">No Copy Trade Bot Yet</h3>
                   <p className="text-muted-foreground mb-6">Create your first copy trade bot to automatically copy trades from successful wallets.</p>
                   <Button 
                     className="bg-gradient-to-r from-solana to-accent hover:shadow-lg transition-all duration-300"

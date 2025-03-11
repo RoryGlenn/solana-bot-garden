@@ -18,10 +18,10 @@ const Sidebar = ({ collapsed = false, onToggle }: SidebarProps) => {
   
   const navItems = [
     { name: 'Dashboard', icon: <Home className="h-5 w-5" />, path: '/dashboard' },
-    { name: 'Volume Bots', icon: <Activity className="h-5 w-5" />, path: '/volume-bots' },
-    { name: 'Trade Bots', icon: <Cpu className="h-5 w-5" />, path: '/trade-bots' },
-    { name: 'Snipe Bots', icon: <Zap className="h-5 w-5" />, path: '/snipe-bots' },
-    { name: 'Copy Trade Bots', icon: <Copy className="h-5 w-5" />, path: '/copy-trade-bots' },
+    { name: 'Volume Bot', icon: <Activity className="h-5 w-5" />, path: '/volume-bots' },
+    { name: 'Trade Bot', icon: <Cpu className="h-5 w-5" />, path: '/trade-bots' },
+    { name: 'Snipe Bot', icon: <Zap className="h-5 w-5" />, path: '/snipe-bots' },
+    { name: 'Copy Trade Bot', icon: <Copy className="h-5 w-5" />, path: '/copy-trade-bots' },
     { name: 'Settings', icon: <Settings className="h-5 w-5" />, path: '/settings' },
   ];
 
