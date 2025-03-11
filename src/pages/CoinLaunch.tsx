@@ -18,6 +18,7 @@ const CoinLaunch = () => {
   const [totalSupply, setTotalSupply] = useState('');
   const [initialPrice, setInitialPrice] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('launch');
   const navigate = useNavigate();
   const { isVisible, animationProps, staggeredAnimationProps } = usePageTransition();
 
@@ -51,6 +52,10 @@ const CoinLaunch = () => {
     }
   };
 
+  const switchToLaunchTab = () => {
+    setActiveTab('launch');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
       <Sidebar
@@ -68,7 +73,7 @@ const CoinLaunch = () => {
           </div>
           
           <div {...animationProps}>
-            <Tabs defaultValue="launch" className="w-full">
+            <Tabs defaultValue="launch" className="w-full" value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="grid w-full max-w-md grid-cols-2">
                 <TabsTrigger value="launch">Launch Token</TabsTrigger>
                 <TabsTrigger value="history">Launch History</TabsTrigger>
@@ -179,7 +184,7 @@ const CoinLaunch = () => {
                         <p className="text-muted-foreground mb-4">
                           You haven't launched any tokens yet
                         </p>
-                        <Button variant="outline" onClick={() => document.querySelector('[data-state="launch"]')?.click()}>
+                        <Button variant="outline" onClick={switchToLaunchTab}>
                           Launch your first token
                         </Button>
                       </div>
