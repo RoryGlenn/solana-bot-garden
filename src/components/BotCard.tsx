@@ -1,4 +1,4 @@
-
+import React from 'react';
 import { Bot } from "@/types";
 import { formatDistanceToNow } from "date-fns";
 import { Activity, Clock, PlayCircle, PauseCircle, ChevronRight } from "lucide-react";
@@ -14,7 +14,7 @@ interface BotCardProps {
   onViewDetails: (id: string) => void;
 }
 
-const BotCard = ({ bot, onPlay, onPause, onViewDetails }: BotCardProps) => {
+const BotCard: React.FC<BotCardProps> = ({ bot, onPlay, onPause, onViewDetails }) => {
   const getBotTypeIcon = (type: string) => {
     switch (type) {
       case 'volume':

@@ -83,20 +83,21 @@ const Dashboard = () => {
     
     const mockBots = generateMockBots();
     setBots(mockBots);
-    
+    setProfitData(generateProfitData());
+  }, [navigate]);
+  
+  useEffect(() => {
     const totalProfit = profitData.monthly.reduce((sum, data) => sum + data.value, 0);
-    const activeBots = mockBots.filter(bot => bot.status === 'active').length;
+    const activeBots = bots.filter(bot => bot.status === 'active').length;
     
     setStats({
-      totalBots: mockBots.length,
+      totalBots: bots.length,
       activeBots,
       totalProfit,
       dailyProfit: totalProfit * 0.1,
       weeklyProfit: totalProfit * 0.5,
     });
-    
-    setProfitData(generateProfitData());
-  }, [navigate]);
+  }, [bots, profitData]);
   
   const handleBotAction = (action: string, id: string) => {
     setBots(prevBots => prevBots.map(bot => {
