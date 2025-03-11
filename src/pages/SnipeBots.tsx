@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/use-toast";
-import { Zap, Save, Play, Pause, BarChart, RefreshCw, Lightning, Sliders, Search } from "lucide-react";
+import { Zap, Save, Play, Pause, BarChart, RefreshCw, Bolt, Sliders, Search } from "lucide-react";
 import { subDays, subHours } from 'date-fns';
 
 const SnipeBots = () => {
