@@ -1,5 +1,5 @@
 
-export type BotType = 'volume' | 'trade' | 'snipe' | 'copy-trade';
+export type BotType = 'volume' | 'trade' | 'snipe' | 'copy-trade' | 'coin-launch';
 
 export interface Bot {
   id: string;
@@ -42,4 +42,15 @@ export interface DashboardStats {
   totalProfit: number;
   dailyProfit: number;
   weeklyProfit: number;
+}
+
+export interface LaunchedToken {
+  id: string;
+  name: string;
+  symbol: string;
+  totalSupply: number;
+  initialPrice: number;
+  currentPrice?: number;
+  launchDate: Date;
+  status: 'pending' | 'active' | 'failed';
 }

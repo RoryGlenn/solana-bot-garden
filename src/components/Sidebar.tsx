@@ -1,6 +1,6 @@
 
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Activity, Bot, Copy, Home, LogOut, Settings, Zap } from 'lucide-react';
+import { Activity, Bot, Copy, Home, LogOut, Rocket, Settings, Zap } from 'lucide-react';
 
 interface SidebarProps {
   collapsed?: boolean;
@@ -21,6 +21,7 @@ const Sidebar = ({ collapsed = false, onToggle }: SidebarProps) => {
     { name: 'Volume Bot', icon: <Activity className="h-5 w-5" />, path: '/volume-bot' },
     { name: 'Snipe Bot', icon: <Zap className="h-5 w-5" />, path: '/snipe-bot' },
     { name: 'Copy Trade Bot', icon: <Copy className="h-5 w-5" />, path: '/copy-trade-bot' },
+    { name: 'Coin Launch', icon: <Rocket className="h-5 w-5" />, path: '/coin-launch' },
     { name: 'Settings', icon: <Settings className="h-5 w-5" />, path: '/settings' },
   ];
 
