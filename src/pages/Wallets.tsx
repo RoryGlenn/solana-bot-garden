@@ -13,7 +13,12 @@ import {
   Code, 
   Copy, 
   Trash,
-  AlertTriangle 
+  AlertTriangle,
+  Key,
+  Download,
+  Upload,
+  Shuffle,
+  ArrowUpDown
 } from "lucide-react";
 import {
   AlertDialog,
@@ -25,12 +30,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 
 interface WalletProps {
   address: string;
   label: string;
   balance: number;
-  type: 'regular' | 'developer';
+  type: 'regular' | 'developer' | 'funder';
 }
 
 const Wallets = () => {
@@ -46,11 +54,20 @@ const Wallets = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDevWalletDialogOpen, setIsDevWalletDialogOpen] = useState(false);
   const [walletToDelete, setWalletToDelete] = useState<string | null>(null);
+  const [isFunderDialogOpen, setIsFunderDialogOpen] = useState(false);
+  const [privateKey, setPrivateKey] = useState('');
+  const [isDistributeDialogOpen, setIsDistributeDialogOpen] = useState(false);
+  const [distributionRange, setDistributionRange] = useState([0.5, 2]);
+  const [isFundWithdrawDialogOpen, setIsFundWithdrawDialogOpen] = useState(false);
+  const [currentActionWallet, setCurrentActionWallet] = useState<string | null>(null);
+  const [actionType, setActionType] = useState<'fund' | 'withdraw'>('fund');
+  const [fundAmount, setFundAmount] = useState(0.1);
   
   const navigate = useNavigate();
   const { animationProps, staggeredAnimationProps } = usePageTransition();
 
   const hasDevWallet = wallets.some(wallet => wallet.type === 'developer');
+  const hasFunderWallet = wallets.some(wallet => wallet.type === 'funder');
   
   const createWallet = (type: 'regular' | 'developer') => {
     if (type === 'developer' && hasDevWallet) {
@@ -61,7 +78,7 @@ const Wallets = () => {
     addNewWallet(type);
   };
 
-  const addNewWallet = (type: 'regular' | 'developer') => {
+  const addNewWallet = (type: 'regular' | 'developer' | 'funder') => {
     // If creating a developer wallet and one already exists, remove the old one first
     let updatedWallets = [...wallets];
     if (type === 'developer') {
@@ -71,16 +88,20 @@ const Wallets = () => {
     // Mock wallet creation
     const newWallet: WalletProps = {
       address: `${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`,
-      label: type === 'regular' ? `Wallet ${wallets.filter(w => w.type === 'regular').length + 1}` : `Dev Wallet`,
-      balance: 0,
+      label: type === 'regular' 
+        ? `Wallet ${wallets.filter(w => w.type === 'regular').length + 1}` 
+        : type === 'developer' 
+          ? `Dev Wallet` 
+          : `Funder Wallet`,
+      balance: type === 'funder' ? 100 : 0,
       type
     };
     
     setWallets([...updatedWallets, newWallet]);
     
     toast({
-      title: `${type === 'developer' ? 'Developer' : ''} Wallet Created`,
-      description: `Your new ${type === 'developer' ? 'developer' : ''} wallet has been created successfully.`,
+      title: `${type.charAt(0).toUpperCase() + type.slice(1)} Wallet Created`,
+      description: `Your new ${type} wallet has been created successfully.`,
     });
   };
 
@@ -119,6 +140,224 @@ const Wallets = () => {
     });
   };
 
+  const openFunderDialog = () => {
+    setPrivateKey('');
+    setIsFunderDialogOpen(true);
+  };
+
+  const createFunderWallet = () => {
+    if (!privateKey.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a private key.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Remove existing funder wallet if it exists
+    const updatedWallets = wallets.filter(w => w.type !== 'funder');
+    
+    // Mock funder wallet creation using private key
+    addNewWallet('funder');
+    setIsFunderDialogOpen(false);
+    setPrivateKey('');
+  };
+
+  const collectAllTokens = () => {
+    if (!hasFunderWallet) {
+      toast({
+        title: "No Funder Wallet",
+        description: "You need to create a funder wallet first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Find funder wallet
+    const funderWallet = wallets.find(w => w.type === 'funder');
+    if (!funderWallet) return;
+
+    // Sum all balances from other wallets
+    let totalCollected = 0;
+    const updatedWallets = wallets.map(wallet => {
+      if (wallet.type !== 'funder') {
+        totalCollected += wallet.balance;
+        return { ...wallet, balance: 0 };
+      }
+      return wallet;
+    });
+
+    // Update funder wallet balance
+    const finalWallets = updatedWallets.map(wallet => 
+      wallet.type === 'funder' 
+        ? { ...wallet, balance: wallet.balance + totalCollected } 
+        : wallet
+    );
+
+    setWallets(finalWallets);
+    
+    toast({
+      title: "Tokens Collected",
+      description: `Collected ${totalCollected.toFixed(2)} SOL to funder wallet.`,
+    });
+  };
+
+  const openDistributeDialog = () => {
+    if (!hasFunderWallet) {
+      toast({
+        title: "No Funder Wallet",
+        description: "You need to create a funder wallet first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setDistributionRange([0.5, 2]);
+    setIsDistributeDialogOpen(true);
+  };
+
+  const distributeTokens = () => {
+    // Find funder wallet
+    const funderWallet = wallets.find(w => w.type === 'funder');
+    if (!funderWallet) return;
+
+    // Count regular wallets (exclude funder and developer)
+    const regularWallets = wallets.filter(w => w.type === 'regular');
+    if (regularWallets.length === 0) {
+      toast({
+        title: "No Regular Wallets",
+        description: "You need at least one regular wallet to distribute tokens.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Calculate total tokens to distribute (random amounts within range)
+    let totalToDistribute = 0;
+    const distributionAmounts: { [address: string]: number } = {};
+
+    regularWallets.forEach(wallet => {
+      const randomAmount = Math.random() * (distributionRange[1] - distributionRange[0]) + distributionRange[0];
+      const roundedAmount = Math.round(randomAmount * 100) / 100; // Round to 2 decimal places
+      distributionAmounts[wallet.address] = roundedAmount;
+      totalToDistribute += roundedAmount;
+    });
+
+    // Check if funder has enough balance
+    if (funderWallet.balance < totalToDistribute) {
+      toast({
+        title: "Insufficient Balance",
+        description: "Funder wallet doesn't have enough tokens to distribute.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Update wallet balances
+    const updatedWallets = wallets.map(wallet => {
+      if (wallet.type === 'funder') {
+        return { ...wallet, balance: wallet.balance - totalToDistribute };
+      } else if (wallet.type === 'regular') {
+        return { ...wallet, balance: wallet.balance + distributionAmounts[wallet.address] };
+      }
+      return wallet;
+    });
+
+    setWallets(updatedWallets);
+    setIsDistributeDialogOpen(false);
+    
+    toast({
+      title: "Tokens Distributed",
+      description: `Distributed ${totalToDistribute.toFixed(2)} SOL to ${regularWallets.length} wallets.`,
+    });
+  };
+
+  const openFundWithdrawDialog = (address: string, action: 'fund' | 'withdraw') => {
+    if (!hasFunderWallet) {
+      toast({
+        title: "No Funder Wallet",
+        description: "You need to create a funder wallet first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setCurrentActionWallet(address);
+    setActionType(action);
+    setFundAmount(0.1);
+    setIsFundWithdrawDialogOpen(true);
+  };
+
+  const processFundWithdraw = () => {
+    if (!currentActionWallet) return;
+    
+    // Find funder wallet and target wallet
+    const funderWallet = wallets.find(w => w.type === 'funder');
+    const targetWallet = wallets.find(w => w.address === currentActionWallet);
+    
+    if (!funderWallet || !targetWallet) return;
+
+    if (actionType === 'fund') {
+      // Check if funder has enough balance
+      if (funderWallet.balance < fundAmount) {
+        toast({
+          title: "Insufficient Balance",
+          description: "Funder wallet doesn't have enough tokens.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Update balances
+      const updatedWallets = wallets.map(wallet => {
+        if (wallet.type === 'funder') {
+          return { ...wallet, balance: wallet.balance - fundAmount };
+        } else if (wallet.address === currentActionWallet) {
+          return { ...wallet, balance: wallet.balance + fundAmount };
+        }
+        return wallet;
+      });
+
+      setWallets(updatedWallets);
+      
+      toast({
+        title: "Wallet Funded",
+        description: `Sent ${fundAmount} SOL to ${targetWallet.label}.`,
+      });
+    } else {
+      // Check if target wallet has enough balance
+      if (targetWallet.balance < fundAmount) {
+        toast({
+          title: "Insufficient Balance",
+          description: `${targetWallet.label} doesn't have enough tokens.`,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Update balances
+      const updatedWallets = wallets.map(wallet => {
+        if (wallet.type === 'funder') {
+          return { ...wallet, balance: wallet.balance + fundAmount };
+        } else if (wallet.address === currentActionWallet) {
+          return { ...wallet, balance: wallet.balance - fundAmount };
+        }
+        return wallet;
+      });
+
+      setWallets(updatedWallets);
+      
+      toast({
+        title: "Tokens Withdrawn",
+        description: `Withdrew ${fundAmount} SOL from ${targetWallet.label}.`,
+      });
+    }
+
+    setIsFundWithdrawDialogOpen(false);
+    setCurrentActionWallet(null);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
       <Sidebar 
@@ -138,8 +377,8 @@ const Wallets = () => {
             </p>
           </div>
           
-          <div className="mb-6 flex justify-between items-center" {...animationProps}>
-            <div className="flex space-x-4">
+          <div className="mb-6 flex flex-wrap justify-between items-center gap-4" {...animationProps}>
+            <div className="flex flex-wrap space-x-4 gap-y-2">
               <Button onClick={() => createWallet('regular')} className="bg-gradient-to-r from-solana to-accent">
                 <Plus className="mr-2 h-4 w-4" />
                 Create Wallet
@@ -152,8 +391,84 @@ const Wallets = () => {
                 <Code className="mr-2 h-4 w-4" />
                 {hasDevWallet ? 'Create New Dev Wallet' : 'Create Dev Wallet'}
               </Button>
+              {!hasFunderWallet && (
+                <Button 
+                  onClick={openFunderDialog}
+                  variant="outline" 
+                  className="border-amber-500 text-amber-500 hover:bg-amber-500/10"
+                >
+                  <Key className="mr-2 h-4 w-4" />
+                  Add Funder Wallet
+                </Button>
+              )}
             </div>
+            
+            {hasFunderWallet && (
+              <div className="flex flex-wrap space-x-4 gap-y-2">
+                <Button 
+                  onClick={collectAllTokens}
+                  variant="outline" 
+                  className="border-emerald-500 text-emerald-500 hover:bg-emerald-500/10"
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  Collect All Tokens
+                </Button>
+                <Button 
+                  onClick={openDistributeDialog}
+                  variant="outline" 
+                  className="border-purple-500 text-purple-500 hover:bg-purple-500/10"
+                >
+                  <Shuffle className="mr-2 h-4 w-4" />
+                  Distribute Tokens
+                </Button>
+              </div>
+            )}
           </div>
+          
+          {hasFunderWallet && (
+            <>
+              <div className="grid gap-4 mb-8" {...animationProps}>
+                <h2 className="text-xl font-semibold">Funder Wallet</h2>
+                {wallets.filter(wallet => wallet.type === 'funder').map((wallet, index) => (
+                  <Card 
+                    key={wallet.address} 
+                    className="border backdrop-blur-sm bg-black/30 glass-dark hover:bg-black/40 transition-colors border-amber-500/30"
+                    {...staggeredAnimationProps(index)}
+                  >
+                    <CardContent className="p-4 flex justify-between items-center">
+                      <div>
+                        <div className="flex items-center space-x-2">
+                          <Key className="h-4 w-4 text-amber-500" />
+                          <h3 className="font-medium">{wallet.label}</h3>
+                        </div>
+                        <p className="text-sm text-muted-foreground flex items-center gap-2">
+                          {formatAddress(wallet.address)}
+                          <button 
+                            onClick={() => copyAddress(wallet.address)}
+                            className="text-muted-foreground hover:text-amber-500"
+                            title="Copy address"
+                          >
+                            <Copy className="h-3.5 w-3.5" />
+                          </button>
+                        </p>
+                      </div>
+                      <div className="flex items-center">
+                        <p className="font-bold mr-4">{wallet.balance} SOL</p>
+                        <button 
+                          onClick={() => deleteWallet(wallet.address)}
+                          className="text-muted-foreground hover:text-destructive mr-3"
+                          title="Delete wallet"
+                        >
+                          <Trash className="h-4 w-4" />
+                        </button>
+                        <ChevronRight className="h-5 w-5 text-muted-foreground cursor-pointer" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </>
+          )}
           
           <div className="grid gap-4" {...animationProps}>
             <h2 className="text-xl font-semibold">Your Wallets</h2>
@@ -189,6 +504,15 @@ const Wallets = () => {
                     </div>
                     <div className="flex items-center">
                       <p className="font-bold mr-4">{wallet.balance} SOL</p>
+                      {hasFunderWallet && (
+                        <button 
+                          onClick={() => openFundWithdrawDialog(wallet.address, 'fund')}
+                          className="text-muted-foreground hover:text-emerald-500 mr-3"
+                          title="Fund/Withdraw"
+                        >
+                          <ArrowUpDown className="h-4 w-4" />
+                        </button>
+                      )}
                       <button 
                         onClick={() => deleteWallet(wallet.address)}
                         className="text-muted-foreground hover:text-destructive mr-3"
@@ -236,6 +560,15 @@ const Wallets = () => {
                     </div>
                     <div className="flex items-center">
                       <p className="font-bold mr-4">{wallet.balance} SOL</p>
+                      {hasFunderWallet && (
+                        <button 
+                          onClick={() => openFundWithdrawDialog(wallet.address, 'fund')}
+                          className="text-muted-foreground hover:text-emerald-500 mr-3"
+                          title="Fund/Withdraw"
+                        >
+                          <ArrowUpDown className="h-4 w-4" />
+                        </button>
+                      )}
                       <button 
                         onClick={() => deleteWallet(wallet.address)}
                         className="text-muted-foreground hover:text-destructive mr-3"
@@ -290,6 +623,132 @@ const Wallets = () => {
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={confirmDevWalletReplacement} className="bg-solana text-white hover:bg-solana/90">
               Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      
+      {/* Funder Wallet Creation Dialog */}
+      <AlertDialog open={isFunderDialogOpen} onOpenChange={setIsFunderDialogOpen}>
+        <AlertDialogContent className="backdrop-blur-sm bg-black/50 border-amber-500">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <Key className="h-5 w-5 text-amber-500" />
+              Add Funder Wallet
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Enter the private key of your funder wallet. This wallet will be used to fund other wallets.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="py-4">
+            <div className="space-y-2">
+              <Label htmlFor="private-key">Private Key</Label>
+              <Input 
+                id="private-key" 
+                value={privateKey} 
+                onChange={(e) => setPrivateKey(e.target.value)} 
+                placeholder="Enter private key..."
+                className="border-amber-500/30 focus-visible:ring-amber-500"
+              />
+            </div>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={createFunderWallet} 
+              className="bg-amber-500 text-white hover:bg-amber-500/90"
+            >
+              Add Wallet
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      
+      {/* Distribute Tokens Dialog */}
+      <AlertDialog open={isDistributeDialogOpen} onOpenChange={setIsDistributeDialogOpen}>
+        <AlertDialogContent className="backdrop-blur-sm bg-black/50 border-purple-500">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <Shuffle className="h-5 w-5 text-purple-500" />
+              Distribute Tokens
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Set the range for random token distribution to regular wallets.
+              The funder wallet will send a random amount within this range to each wallet.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="py-4 space-y-6">
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <Label>Distribution Range (SOL)</Label>
+                <span className="text-sm text-muted-foreground">
+                  {distributionRange[0]} - {distributionRange[1]} SOL
+                </span>
+              </div>
+              <Slider 
+                value={distributionRange}
+                onValueChange={setDistributionRange}
+                max={10}
+                step={0.1}
+                min={0.1}
+                className="[&>.relative]:bg-purple-800/20"
+              />
+            </div>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={distributeTokens} 
+              className="bg-purple-500 text-white hover:bg-purple-500/90"
+            >
+              Distribute
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      
+      {/* Fund/Withdraw Dialog */}
+      <AlertDialog open={isFundWithdrawDialogOpen} onOpenChange={setIsFundWithdrawDialogOpen}>
+        <AlertDialogContent className="backdrop-blur-sm bg-black/50 border-emerald-500">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              {actionType === 'fund' ? 
+                <Upload className="h-5 w-5 text-emerald-500" /> :
+                <Download className="h-5 w-5 text-emerald-500" />
+              }
+              {actionType === 'fund' ? 'Fund Wallet' : 'Withdraw Tokens'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {actionType === 'fund' 
+                ? 'Specify the amount to send from the funder wallet to this wallet.' 
+                : 'Specify the amount to withdraw from this wallet to the funder wallet.'}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="py-4 space-y-6">
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <Label>Amount (SOL)</Label>
+                <span className="text-sm text-muted-foreground">
+                  {fundAmount} SOL
+                </span>
+              </div>
+              <Slider 
+                value={[fundAmount]}
+                onValueChange={(value) => setFundAmount(value[0])}
+                max={10}
+                step={0.1}
+                min={0.1}
+                className="[&>.relative]:bg-emerald-800/20"
+              />
+            </div>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={processFundWithdraw} 
+              className="bg-emerald-500 text-white hover:bg-emerald-500/90"
+            >
+              {actionType === 'fund' ? 'Fund' : 'Withdraw'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
