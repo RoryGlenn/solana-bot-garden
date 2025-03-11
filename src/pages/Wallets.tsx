@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '@/components/Sidebar';
@@ -79,13 +78,11 @@ const Wallets = () => {
   };
 
   const addNewWallet = (type: 'regular' | 'developer' | 'funder') => {
-    // If creating a developer wallet and one already exists, remove the old one first
     let updatedWallets = [...wallets];
     if (type === 'developer') {
       updatedWallets = wallets.filter(w => w.type !== 'developer');
     }
     
-    // Mock wallet creation
     const newWallet: WalletProps = {
       address: `${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`,
       label: type === 'regular' 
@@ -155,10 +152,8 @@ const Wallets = () => {
       return;
     }
 
-    // Remove existing funder wallet if it exists
-    const updatedWallets = wallets.filter(w => w.type !== 'funder');
+    let updatedWallets = wallets.filter(w => w.type !== 'funder');
     
-    // Mock funder wallet creation using private key
     addNewWallet('funder');
     setIsFunderDialogOpen(false);
     setPrivateKey('');
@@ -174,11 +169,9 @@ const Wallets = () => {
       return;
     }
 
-    // Find funder wallet
     const funderWallet = wallets.find(w => w.type === 'funder');
     if (!funderWallet) return;
 
-    // Sum all balances from other wallets
     let totalCollected = 0;
     const updatedWallets = wallets.map(wallet => {
       if (wallet.type !== 'funder') {
@@ -188,7 +181,6 @@ const Wallets = () => {
       return wallet;
     });
 
-    // Update funder wallet balance
     const finalWallets = updatedWallets.map(wallet => 
       wallet.type === 'funder' 
         ? { ...wallet, balance: wallet.balance + totalCollected } 
@@ -218,11 +210,9 @@ const Wallets = () => {
   };
 
   const distributeTokens = () => {
-    // Find funder wallet
     const funderWallet = wallets.find(w => w.type === 'funder');
     if (!funderWallet) return;
 
-    // Count regular wallets (exclude funder and developer)
     const regularWallets = wallets.filter(w => w.type === 'regular');
     if (regularWallets.length === 0) {
       toast({
@@ -233,18 +223,16 @@ const Wallets = () => {
       return;
     }
 
-    // Calculate total tokens to distribute (random amounts within range)
     let totalToDistribute = 0;
     const distributionAmounts: { [address: string]: number } = {};
 
     regularWallets.forEach(wallet => {
       const randomAmount = Math.random() * (distributionRange[1] - distributionRange[0]) + distributionRange[0];
-      const roundedAmount = Math.round(randomAmount * 100) / 100; // Round to 2 decimal places
+      const roundedAmount = Math.round(randomAmount * 100) / 100;
       distributionAmounts[wallet.address] = roundedAmount;
       totalToDistribute += roundedAmount;
     });
 
-    // Check if funder has enough balance
     if (funderWallet.balance < totalToDistribute) {
       toast({
         title: "Insufficient Balance",
@@ -254,7 +242,6 @@ const Wallets = () => {
       return;
     }
 
-    // Update wallet balances
     const updatedWallets = wallets.map(wallet => {
       if (wallet.type === 'funder') {
         return { ...wallet, balance: wallet.balance - totalToDistribute };
@@ -292,14 +279,12 @@ const Wallets = () => {
   const processFundWithdraw = () => {
     if (!currentActionWallet) return;
     
-    // Find funder wallet and target wallet
     const funderWallet = wallets.find(w => w.type === 'funder');
     const targetWallet = wallets.find(w => w.address === currentActionWallet);
     
     if (!funderWallet || !targetWallet) return;
 
     if (actionType === 'fund') {
-      // Check if funder has enough balance
       if (funderWallet.balance < fundAmount) {
         toast({
           title: "Insufficient Balance",
@@ -309,7 +294,6 @@ const Wallets = () => {
         return;
       }
 
-      // Update balances
       const updatedWallets = wallets.map(wallet => {
         if (wallet.type === 'funder') {
           return { ...wallet, balance: wallet.balance - fundAmount };
@@ -326,7 +310,6 @@ const Wallets = () => {
         description: `Sent ${fundAmount} SOL to ${targetWallet.label}.`,
       });
     } else {
-      // Check if target wallet has enough balance
       if (targetWallet.balance < fundAmount) {
         toast({
           title: "Insufficient Balance",
@@ -336,7 +319,6 @@ const Wallets = () => {
         return;
       }
 
-      // Update balances
       const updatedWallets = wallets.map(wallet => {
         if (wallet.type === 'funder') {
           return { ...wallet, balance: wallet.balance + fundAmount };
@@ -377,7 +359,6 @@ const Wallets = () => {
             </p>
           </div>
           
-          {/* Reorganized buttons into a single horizontal line */}
           <div className="mb-6 flex flex-wrap items-center gap-3" {...animationProps}>
             <Button onClick={() => createWallet('regular')} className="bg-gradient-to-r from-solana to-accent">
               <Plus className="mr-2 h-4 w-4" />
@@ -584,7 +565,6 @@ const Wallets = () => {
         </div>
       </main>
       
-      {/* Delete Wallet Confirmation Dialog */}
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent className="backdrop-blur-sm bg-black/50 border-destructive">
           <AlertDialogHeader>
@@ -605,7 +585,6 @@ const Wallets = () => {
         </AlertDialogContent>
       </AlertDialog>
       
-      {/* Dev Wallet Replacement Confirmation Dialog */}
       <AlertDialog open={isDevWalletDialogOpen} onOpenChange={setIsDevWalletDialogOpen}>
         <AlertDialogContent className="backdrop-blur-sm bg-black/50 border-solana">
           <AlertDialogHeader>
@@ -626,7 +605,6 @@ const Wallets = () => {
         </AlertDialogContent>
       </AlertDialog>
       
-      {/* Funder Wallet Creation Dialog */}
       <AlertDialog open={isFunderDialogOpen} onOpenChange={setIsFunderDialogOpen}>
         <AlertDialogContent className="backdrop-blur-sm bg-black/50 border-amber-500">
           <AlertDialogHeader>
@@ -662,7 +640,6 @@ const Wallets = () => {
         </AlertDialogContent>
       </AlertDialog>
       
-      {/* Distribute Tokens Dialog */}
       <AlertDialog open={isDistributeDialogOpen} onOpenChange={setIsDistributeDialogOpen}>
         <AlertDialogContent className="backdrop-blur-sm bg-black/50 border-purple-500">
           <AlertDialogHeader>
@@ -680,16 +657,16 @@ const Wallets = () => {
               <div className="flex justify-between">
                 <Label>Distribution Range (SOL)</Label>
                 <span className="text-sm text-muted-foreground">
-                  {distributionRange[0]} - {distributionRange[1]} SOL
+                  {distributionRange[0].toFixed(1)} - {distributionRange[1].toFixed(1)} SOL
                 </span>
               </div>
               <Slider 
                 value={distributionRange}
                 onValueChange={setDistributionRange}
-                max={10}
-                step={0.1}
+                max={25}
+                step={0.5}
                 min={0.1}
-                className="[&>.relative]:bg-purple-800/20"
+                className="[&_[data-orientation=horizontal]]:h-2 [&_[data-orientation=horizontal]>[data-state]]:bg-purple-500"
               />
             </div>
           </div>
@@ -705,7 +682,6 @@ const Wallets = () => {
         </AlertDialogContent>
       </AlertDialog>
       
-      {/* Updated Fund/Withdraw Dialog with text input */}
       <AlertDialog open={isFundWithdrawDialogOpen} onOpenChange={setIsFundWithdrawDialogOpen}>
         <AlertDialogContent className="backdrop-blur-sm bg-black/50 border-emerald-500">
           <AlertDialogHeader>
@@ -755,24 +731,21 @@ const Wallets = () => {
           </div>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={() => {
-                setActionType('fund');
-                processFundWithdraw();
-              }} 
-              className="bg-emerald-500 text-white hover:bg-emerald-500/90"
-            >
-              Fund
-            </AlertDialogAction>
-            <AlertDialogAction 
-              onClick={() => {
-                setActionType('withdraw');
-                processFundWithdraw();
-              }} 
-              className="bg-amber-500 text-white hover:bg-amber-500/90"
-            >
-              Withdraw
-            </AlertDialogAction>
+            {actionType === 'fund' ? (
+              <AlertDialogAction 
+                onClick={processFundWithdraw} 
+                className="bg-emerald-500 text-white hover:bg-emerald-500/90"
+              >
+                Fund
+              </AlertDialogAction>
+            ) : (
+              <AlertDialogAction 
+                onClick={processFundWithdraw} 
+                className="bg-amber-500 text-white hover:bg-amber-500/90"
+              >
+                Withdraw
+              </AlertDialogAction>
+            )}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
