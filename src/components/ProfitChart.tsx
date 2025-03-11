@@ -49,11 +49,9 @@ const ProfitChart = ({ dailyData, weeklyData, monthlyData, totalProfit }: Profit
   };
 
   const currentData = getCurrentData();
-  const dataHasPositiveValues = currentData.some(item => item.value > 0);
-  const dataHasNegativeValues = currentData.some(item => item.value < 0);
   
   return (
-    <Card className="border backdrop-blur-sm bg-white/90 dark:bg-black/30">
+    <Card className="border backdrop-blur-sm bg-black/30 glass-dark">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div>
@@ -83,10 +81,6 @@ const ProfitChart = ({ dailyData, weeklyData, monthlyData, totalProfit }: Profit
                     <stop offset="5%" stopColor="#9945FF" stopOpacity={0.8}/>
                     <stop offset="95%" stopColor="#9945FF" stopOpacity={0}/>
                   </linearGradient>
-                  <linearGradient id="colorLoss" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#FF4569" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#FF4569" stopOpacity={0}/>
-                  </linearGradient>
                 </defs>
                 <XAxis 
                   dataKey="timestamp" 
@@ -110,38 +104,23 @@ const ProfitChart = ({ dailyData, weeklyData, monthlyData, totalProfit }: Profit
                     border: 'none',
                     boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
                     padding: '8px 12px',
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    backgroundColor: 'rgba(20, 20, 30, 0.95)',
+                    color: '#fff'
                   }}
                 />
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(200, 200, 200, 0.2)" />
-                {dataHasPositiveValues && (
-                  <Area 
-                    type="monotone" 
-                    dataKey="value" 
-                    stroke="#9945FF" 
-                    fillOpacity={1}
-                    fill="url(#colorProfit)" 
-                    isAnimationActive={true}
-                    animationDuration={1000}
-                    animationEasing="ease-out"
-                    activeDot={{ r: 6, stroke: '#9945FF', strokeWidth: 2, fill: 'white' }}
-                    dot={{ stroke: '#9945FF', strokeWidth: 1, fill: 'white', r: 3 }}
-                  />
-                )}
-                {dataHasNegativeValues && (
-                  <Area 
-                    type="monotone" 
-                    dataKey={(data) => (data.value < 0 ? Math.abs(data.value) : null)}
-                    stroke="#FF4569" 
-                    fillOpacity={1}
-                    fill="url(#colorLoss)" 
-                    isAnimationActive={true}
-                    animationDuration={1000}
-                    animationEasing="ease-out"
-                    activeDot={{ r: 6, stroke: '#FF4569', strokeWidth: 2, fill: 'white' }}
-                    dot={{ stroke: '#FF4569', strokeWidth: 1, fill: 'white', r: 3 }}
-                  />
-                )}
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(200, 200, 200, 0.1)" />
+                <Area 
+                  type="monotone" 
+                  dataKey="value" 
+                  stroke="#9945FF" 
+                  fillOpacity={1}
+                  fill="url(#colorProfit)" 
+                  isAnimationActive={true}
+                  animationDuration={1000}
+                  animationEasing="ease-out"
+                  activeDot={{ r: 6, stroke: '#9945FF', strokeWidth: 2, fill: 'white' }}
+                  dot={{ stroke: '#9945FF', strokeWidth: 1, fill: 'white', r: 3 }}
+                />
               </AreaChart>
             </ResponsiveContainer>
           </TabsContent>
