@@ -8,7 +8,6 @@ import Index from "./pages/Index";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import VolumeBot from "./pages/VolumeBots";
-import TradeBot from "./pages/TradeBots";
 import SnipeBot from "./pages/SnipeBots";
 import CopyTradeBot from "./pages/CopyTradeBots";
 import Settings from "./pages/Settings";
@@ -27,7 +26,6 @@ const App = () => (
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/volume-bot" element={<VolumeBot />} />
-          <Route path="/trade-bot" element={<TradeBot />} />
           <Route path="/snipe-bot" element={<SnipeBot />} />
           <Route path="/copy-trade-bot" element={<CopyTradeBot />} />
           <Route path="/settings" element={<Settings />} />

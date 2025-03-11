@@ -31,7 +31,7 @@ const generateMockBots = (): Bot[] => {
     },
     {
       id: '2',
-      name: 'BONK Sniper',
+      name: 'Snipe Bot',
       type: 'snipe',
       status: 'active',
       profit: 127.32,
@@ -43,23 +43,6 @@ const generateMockBots = (): Bot[] => {
         strategy: 'Momentum',
         risk: 'high',
         budget: 500
-      }
-    },
-    {
-      id: '3',
-      name: 'JUP/USDC Trader',
-      type: 'trade',
-      status: 'paused',
-      profit: -52.18,
-      createdAt: subDays(new Date(), 3),
-      lastActive: subHours(new Date(), 12),
-      config: {
-        tradingPair: 'JUP/USDC',
-        strategy: 'Range Trading',
-        risk: 'low',
-        budget: 800,
-        stopLoss: 3,
-        takeProfit: 8
       }
     },
     {
@@ -153,14 +136,11 @@ const Dashboard = () => {
           case 'pause':
             newStatus = 'paused';
             break;
-          case 'stop':
-            newStatus = 'stopped';
-            break;
         }
         
         toast({
-          title: `Bot ${action === 'delete' ? 'deleted' : action === 'play' ? 'started' : action === 'pause' ? 'paused' : 'stopped'}`,
-          description: `${bot.name} has been ${action === 'delete' ? 'deleted' : action === 'play' ? 'started' : action === 'pause' ? 'paused' : 'stopped'}.`
+          title: `Bot ${action === 'play' ? 'started' : 'paused'}`,
+          description: `${bot.name} has been ${action === 'play' ? 'started' : 'paused'}.`
         });
         
         return {
@@ -171,14 +151,6 @@ const Dashboard = () => {
       }
       return bot;
     }));
-    
-    if (action === 'delete') {
-      setBots(prevBots => prevBots.filter(bot => bot.id !== id));
-      toast({
-        title: "Bot deleted",
-        description: "The bot has been removed from your dashboard."
-      });
-    }
   };
   
   const handleViewBotDetails = (id: string) => {
@@ -187,9 +159,6 @@ const Dashboard = () => {
       switch (bot.type) {
         case 'volume':
           navigate('/volume-bot');
-          break;
-        case 'trade':
-          navigate('/trade-bot');
           break;
         case 'snipe':
           navigate('/snipe-bot');
@@ -302,7 +271,7 @@ const Dashboard = () => {
           </div>
           
           <div className="mb-6" {...animationProps}>
-            <h2 className="text-xl font-bold tracking-tight mb-4">Recent Bot Activity</h2>
+            <h2 className="text-xl font-bold tracking-tight mb-4">Bot Activity</h2>
             <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
               {bots.map((bot, index) => (
                 <div key={bot.id} {...staggeredAnimationProps(index)}>
@@ -310,8 +279,6 @@ const Dashboard = () => {
                     bot={bot}
                     onPlay={(id) => handleBotAction('play', id)}
                     onPause={(id) => handleBotAction('pause', id)}
-                    onStop={(id) => handleBotAction('stop', id)}
-                    onDelete={(id) => handleBotAction('delete', id)}
                     onViewDetails={handleViewBotDetails}
                   />
                 </div>

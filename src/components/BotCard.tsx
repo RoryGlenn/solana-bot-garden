@@ -1,7 +1,7 @@
 
 import { Bot } from "@/types";
 import { formatDistanceToNow } from "date-fns";
-import { Activity, Clock, PlayCircle, PauseCircle, StopCircle, ChevronRight, Trash2 } from "lucide-react";
+import { Activity, Clock, PlayCircle, PauseCircle, ChevronRight } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,17 +11,13 @@ interface BotCardProps {
   bot: Bot;
   onPlay: (id: string) => void;
   onPause: (id: string) => void;
-  onStop: (id: string) => void;
-  onDelete: (id: string) => void;
   onViewDetails: (id: string) => void;
 }
 
-const BotCard = ({ bot, onPlay, onPause, onStop, onDelete, onViewDetails }: BotCardProps) => {
+const BotCard = ({ bot, onPlay, onPause, onViewDetails }: BotCardProps) => {
   const getBotTypeIcon = (type: string) => {
     switch (type) {
       case 'volume':
-        return <Activity className="h-4 w-4" />;
-      case 'trade':
         return <Activity className="h-4 w-4" />;
       case 'snipe':
         return <Activity className="h-4 w-4" />;
@@ -104,14 +100,6 @@ const BotCard = ({ bot, onPlay, onPause, onStop, onDelete, onViewDetails }: BotC
               <PauseCircle className="h-4 w-4" />
             </Button>
           )}
-          {bot.status !== 'stopped' && (
-            <Button variant="outline" size="icon" className="h-8 w-8 border-sidebar-border bg-background/20" onClick={() => onStop(bot.id)}>
-              <StopCircle className="h-4 w-4" />
-            </Button>
-          )}
-          <Button variant="outline" size="icon" className="h-8 w-8 text-destructive border-sidebar-border bg-background/20" onClick={() => onDelete(bot.id)}>
-            <Trash2 className="h-4 w-4" />
-          </Button>
         </div>
         <Button variant="ghost" size="sm" className="h-8" onClick={() => onViewDetails(bot.id)}>
           Details
