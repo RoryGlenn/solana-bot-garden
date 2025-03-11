@@ -46,7 +46,7 @@ const LoginForm = () => {
   };
 
   return (
-    <Card className="w-full max-w-md shadow-lg border-0 backdrop-blur-sm bg-white/90 dark:bg-black/30">
+    <Card className="w-full max-w-md shadow-lg border-0 backdrop-blur-sm bg-black/30 dark:bg-black/50">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold text-center">Sign In</CardTitle>
         <CardDescription className="text-center">

@@ -1,4 +1,3 @@
-
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -135,48 +134,36 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             <PriceCard
-              title="Basic"
-              description="Perfect for beginners"
-              price={1}
+              title="Monthly"
+              description="Full access, billed monthly"
+              price={1.5}
               features={[
-                "1 active bot",
-                "Basic strategies",
-                "Volume bot access",
-                "24/7 bot operation",
-                "IP-locked security"
-              ]}
-            />
-            
-            <PriceCard
-              title="Pro"
-              description="For serious traders"
-              price={2.5}
-              features={[
-                "3 active bots",
-                "Advanced strategies",
                 "All bot types access",
+                "Unlimited active bots",
+                "Advanced strategies",
                 "Priority execution",
                 "IP-locked security",
                 "Email notifications"
               ]}
-              popular={true}
             />
             
             <PriceCard
-              title="Enterprise"
-              description="For professional traders"
-              price={5}
+              title="Lifetime"
+              description="One-time payment, lifetime access"
+              price={10}
               features={[
-                "Unlimited active bots",
-                "Custom strategies",
                 "All bot types access",
+                "Unlimited active bots",
+                "Advanced strategies",
                 "Priority execution",
                 "IP-locked security",
                 "Email & SMS notifications",
-                "Dedicated support"
+                "Dedicated support",
+                "Future updates included"
               ]}
+              popular={true}
             />
           </div>
         </div>
