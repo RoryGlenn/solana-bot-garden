@@ -9,18 +9,37 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/use-toast";
-import { Rocket, Coins, ArrowUp } from "lucide-react";
+import { Rocket, Coins, ArrowUp, Image as ImageIcon, FileText, Link as LinkIcon, MessageCircle } from "lucide-react";
 
 const CoinLaunch = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [tokenName, setTokenName] = useState('');
   const [tokenSymbol, setTokenSymbol] = useState('');
-  const [totalSupply, setTotalSupply] = useState('');
-  const [initialPrice, setInitialPrice] = useState('');
+  const [description, setDescription] = useState('');
+  const [xLink, setXLink] = useState('');
+  const [websiteLink, setWebsiteLink] = useState('');
+  const [telegramLink, setTelegramLink] = useState('');
+  const [devBuyIn, setDevBuyIn] = useState('');
+  const [tokenImage, setTokenImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('launch');
   const navigate = useNavigate();
   const { isVisible, animationProps, staggeredAnimationProps } = usePageTransition();
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setTokenImage(file);
+      
+      // Create image preview
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImagePreview(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,8 +58,13 @@ const CoinLaunch = () => {
       // Reset form
       setTokenName('');
       setTokenSymbol('');
-      setTotalSupply('');
-      setInitialPrice('');
+      setDescription('');
+      setXLink('');
+      setWebsiteLink('');
+      setTelegramLink('');
+      setDevBuyIn('');
+      setTokenImage(null);
+      setImagePreview(null);
       
       // Switch to tokens tab to see the new token
       setActiveTab('tokens');
@@ -96,6 +120,45 @@ const CoinLaunch = () => {
                   <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-6">
                       <div className="space-y-4">
+                        {/* Token Image Upload */}
+                        <div className="mb-6">
+                          <Label htmlFor="tokenImage">Token Image</Label>
+                          <div className="mt-2 flex items-center gap-4">
+                            <div className="h-20 w-20 border-2 border-dashed border-border rounded-full flex items-center justify-center overflow-hidden">
+                              {imagePreview ? (
+                                <img 
+                                  src={imagePreview} 
+                                  alt="Token preview" 
+                                  className="h-full w-full object-cover"
+                                />
+                              ) : (
+                                <ImageIcon className="h-8 w-8 text-muted-foreground" />
+                              )}
+                            </div>
+                            <div>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => document.getElementById('tokenImage')?.click()}
+                                className="mb-2"
+                              >
+                                <ImageIcon className="h-4 w-4 mr-2" />
+                                Select Image
+                              </Button>
+                              <input
+                                id="tokenImage"
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={handleImageChange}
+                              />
+                              <p className="text-xs text-muted-foreground">
+                                Recommended: 512x512 PNG format
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <Label htmlFor="tokenName">Token Name</Label>
@@ -119,28 +182,57 @@ const CoinLaunch = () => {
                           </div>
                         </div>
                         
+                        <div className="space-y-2">
+                          <Label htmlFor="description">Description</Label>
+                          <Input
+                            id="description"
+                            placeholder="Brief description of your token"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            required
+                          />
+                        </div>
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label htmlFor="totalSupply">Total Supply</Label>
+                            <Label htmlFor="websiteLink">Website Link</Label>
                             <Input
-                              id="totalSupply"
-                              type="number"
-                              placeholder="e.g. 1000000"
-                              value={totalSupply}
-                              onChange={(e) => setTotalSupply(e.target.value)}
-                              required
+                              id="websiteLink"
+                              placeholder="https://"
+                              value={websiteLink}
+                              onChange={(e) => setWebsiteLink(e.target.value)}
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="initialPrice">Initial Price (SOL)</Label>
+                            <Label htmlFor="xLink">X/Twitter Link</Label>
                             <Input
-                              id="initialPrice"
+                              id="xLink"
+                              placeholder="https://x.com/"
+                              value={xLink}
+                              onChange={(e) => setXLink(e.target.value)}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="telegramLink">Telegram Link</Label>
+                            <Input
+                              id="telegramLink"
+                              placeholder="https://t.me/"
+                              value={telegramLink}
+                              onChange={(e) => setTelegramLink(e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="devBuyIn">Developer Buy-In (SOL)</Label>
+                            <Input
+                              id="devBuyIn"
                               type="number"
-                              step="0.000001"
-                              placeholder="e.g. 0.000001"
-                              value={initialPrice}
-                              onChange={(e) => setInitialPrice(e.target.value)}
-                              required
+                              step="0.001"
+                              placeholder="0.5"
+                              value={devBuyIn}
+                              onChange={(e) => setDevBuyIn(e.target.value)}
                             />
                           </div>
                         </div>
