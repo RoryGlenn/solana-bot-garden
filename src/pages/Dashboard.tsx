@@ -7,7 +7,7 @@ import Sidebar from '@/components/Sidebar';
 import { usePageTransition } from '@/utils/animations';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
-import { Activity, Bot as BotIcon, Cpu, DollarSign } from "lucide-react";
+import { Activity, Bot as BotIcon, Clock, Cpu, DollarSign } from "lucide-react";
 import { addDays, format, subDays, subHours, subMonths, subWeeks } from 'date-fns';
 
 const generateMockBots = (): Bot[] => {
@@ -182,7 +182,25 @@ const Dashboard = () => {
   };
   
   const handleViewBotDetails = (id: string) => {
-    navigate(`/bot/${id}`);
+    const bot = bots.find(b => b.id === id);
+    if (bot) {
+      switch (bot.type) {
+        case 'volume':
+          navigate('/volume-bot');
+          break;
+        case 'trade':
+          navigate('/trade-bot');
+          break;
+        case 'snipe':
+          navigate('/snipe-bot');
+          break;
+        case 'copy-trade':
+          navigate('/copy-trade-bot');
+          break;
+        default:
+          break;
+      }
+    }
   };
   
   const formatCurrency = (value: number) => {
@@ -203,15 +221,17 @@ const Dashboard = () => {
       
       <main className={`transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
         <div className="p-6">
-          <div className="mb-8" {...animationProps}>
-            <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-            <p className="text-muted-foreground">
-              Monitor your bots and trading performance
-            </p>
+          <div className="mb-8 flex items-center justify-between" {...animationProps}>
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+              <p className="text-muted-foreground">
+                <span className="font-semibold text-solana">{stats.activeBots}</span> active bots out of {stats.totalBots} total
+              </p>
+            </div>
           </div>
           
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-            <Card className="border backdrop-blur-sm bg-black/30" {...staggeredAnimationProps(0)}>
+            <Card className="border backdrop-blur-sm bg-black/30 glass-dark" {...staggeredAnimationProps(0)}>
               <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                 <CardTitle className="text-sm font-medium">Total Bots</CardTitle>
                 <BotIcon className="h-4 w-4 text-muted-foreground" />
@@ -224,7 +244,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
             
-            <Card className="border backdrop-blur-sm bg-black/30" {...staggeredAnimationProps(1)}>
+            <Card className="border backdrop-blur-sm bg-black/30 glass-dark" {...staggeredAnimationProps(1)}>
               <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                 <CardTitle className="text-sm font-medium">Total Profit</CardTitle>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
@@ -239,7 +259,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
             
-            <Card className="border backdrop-blur-sm bg-black/30" {...staggeredAnimationProps(2)}>
+            <Card className="border backdrop-blur-sm bg-black/30 glass-dark" {...staggeredAnimationProps(2)}>
               <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                 <CardTitle className="text-sm font-medium">Daily Profit</CardTitle>
                 <Activity className="h-4 w-4 text-muted-foreground" />
@@ -254,7 +274,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
             
-            <Card className="border backdrop-blur-sm bg-black/30" {...staggeredAnimationProps(3)}>
+            <Card className="border backdrop-blur-sm bg-black/30 glass-dark" {...staggeredAnimationProps(3)}>
               <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                 <CardTitle className="text-sm font-medium">Weekly Profit</CardTitle>
                 <Cpu className="h-4 w-4 text-muted-foreground" />
@@ -282,7 +302,7 @@ const Dashboard = () => {
           </div>
           
           <div className="mb-6" {...animationProps}>
-            <h2 className="text-xl font-bold tracking-tight mb-4">Recent Bots</h2>
+            <h2 className="text-xl font-bold tracking-tight mb-4">Recent Bot Activity</h2>
             <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
               {bots.map((bot, index) => (
                 <div key={bot.id} {...staggeredAnimationProps(index)}>

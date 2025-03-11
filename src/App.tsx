@@ -7,10 +7,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
-import VolumeBots from "./pages/VolumeBots";
-import TradeBots from "./pages/TradeBots";
-import SnipeBots from "./pages/SnipeBots";
-import CopyTradeBots from "./pages/CopyTradeBots";
+import VolumeBot from "./pages/VolumeBots";
+import TradeBot from "./pages/TradeBots";
+import SnipeBot from "./pages/SnipeBots";
+import CopyTradeBot from "./pages/CopyTradeBots";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -26,10 +26,10 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/volume-bots" element={<VolumeBots />} />
-          <Route path="/trade-bots" element={<TradeBots />} />
-          <Route path="/snipe-bots" element={<SnipeBots />} />
-          <Route path="/copy-trade-bots" element={<CopyTradeBots />} />
+          <Route path="/volume-bot" element={<VolumeBot />} />
+          <Route path="/trade-bot" element={<TradeBot />} />
+          <Route path="/snipe-bot" element={<SnipeBot />} />
+          <Route path="/copy-trade-bot" element={<CopyTradeBot />} />
           <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
