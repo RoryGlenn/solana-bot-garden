@@ -11,6 +11,7 @@ import VolumeBot from "./pages/VolumeBots";
 import SnipeBot from "./pages/SnipeBots";
 import CopyTradeBot from "./pages/CopyTradeBots";
 import CoinLaunch from "./pages/CoinLaunch";
+import Wallets from "./pages/Wallets";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/snipe-bot" element={<SnipeBot />} />
           <Route path="/copy-trade-bot" element={<CopyTradeBot />} />
           <Route path="/coin-launch" element={<CoinLaunch />} />
+          <Route path="/wallets" element={<Wallets />} />
           <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

@@ -1,20 +1,14 @@
 
-import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { ProfitData } from "@/types";
 
 interface ProfitChartProps {
-  dailyData: ProfitData[];
-  weeklyData: ProfitData[];
   monthlyData: ProfitData[];
   totalProfit: number;
 }
 
-const ProfitChart = ({ dailyData, weeklyData, monthlyData, totalProfit }: ProfitChartProps) => {
-  const [period, setPeriod] = useState<'daily' | 'weekly' | 'monthly'>('daily');
-  
+const ProfitChart = ({ monthlyData, totalProfit }: ProfitChartProps) => {
   const formatChartValue = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -26,29 +20,8 @@ const ProfitChart = ({ dailyData, weeklyData, monthlyData, totalProfit }: Profit
 
   const formatDate = (timestamp: Date) => {
     const date = new Date(timestamp);
-    
-    switch (period) {
-      case 'daily':
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      case 'weekly':
-        return date.toLocaleDateString([], { weekday: 'short' });
-      case 'monthly':
-        return date.toLocaleDateString([], { day: 'numeric', month: 'short' });
-    }
+    return date.toLocaleDateString([], { day: 'numeric', month: 'short' });
   };
-
-  const getCurrentData = () => {
-    switch (period) {
-      case 'daily':
-        return dailyData;
-      case 'weekly':
-        return weeklyData;
-      case 'monthly':
-        return monthlyData;
-    }
-  };
-
-  const currentData = getCurrentData();
   
   return (
     <Card className="border backdrop-blur-sm bg-black/30 glass-dark">
@@ -67,64 +40,57 @@ const ProfitChart = ({ dailyData, weeklyData, monthlyData, totalProfit }: Profit
         </div>
       </CardHeader>
       <CardContent>
-        <Tabs value={period} onValueChange={(value) => setPeriod(value as any)} className="w-full">
-          <TabsList className="mb-4">
-            <TabsTrigger value="daily">Daily</TabsTrigger>
-            <TabsTrigger value="weekly">Weekly</TabsTrigger>
-            <TabsTrigger value="monthly">Monthly</TabsTrigger>
-          </TabsList>
-          <TabsContent value={period} className="w-full h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={currentData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#9945FF" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#9945FF" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <XAxis 
-                  dataKey="timestamp" 
-                  tickFormatter={formatDate}
-                  tick={{ fontSize: 12 }}
-                  stroke="#888888"
-                  tickLine={false}
-                />
-                <YAxis 
-                  tickFormatter={formatChartValue}
-                  tick={{ fontSize: 12 }}
-                  stroke="#888888"
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <Tooltip 
-                  formatter={(value) => [formatChartValue(value as number), 'Profit']}
-                  labelFormatter={(label) => formatDate(label as Date)}
-                  contentStyle={{
-                    borderRadius: '8px',
-                    border: 'none',
-                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                    padding: '8px 12px',
-                    backgroundColor: 'rgba(20, 20, 30, 0.95)',
-                    color: '#fff'
-                  }}
-                />
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(200, 200, 200, 0.1)" />
-                <Area 
-                  type="monotone" 
-                  dataKey="value" 
-                  stroke="#9945FF" 
-                  fillOpacity={1}
-                  fill="url(#colorProfit)" 
-                  isAnimationActive={true}
-                  animationDuration={1000}
-                  animationEasing="ease-out"
-                  activeDot={{ r: 6, stroke: '#9945FF', strokeWidth: 2, fill: 'white' }}
-                  dot={{ stroke: '#9945FF', strokeWidth: 1, fill: 'white', r: 3 }}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </TabsContent>
-        </Tabs>
+        <div className="w-full h-[300px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={monthlyData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+              <defs>
+                <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#9945FF" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="#9945FF" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <XAxis 
+                dataKey="timestamp" 
+                tickFormatter={formatDate}
+                tick={{ fontSize: 12 }}
+                stroke="#888888"
+                tickLine={false}
+              />
+              <YAxis 
+                tickFormatter={formatChartValue}
+                tick={{ fontSize: 12 }}
+                stroke="#888888"
+                tickLine={false}
+                axisLine={false}
+              />
+              <Tooltip 
+                formatter={(value) => [formatChartValue(value as number), 'Profit']}
+                labelFormatter={(label) => formatDate(label as Date)}
+                contentStyle={{
+                  borderRadius: '8px',
+                  border: 'none',
+                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                  padding: '8px 12px',
+                  backgroundColor: 'rgba(20, 20, 30, 0.95)',
+                  color: '#fff'
+                }}
+              />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(200, 200, 200, 0.1)" />
+              <Area 
+                type="monotone" 
+                dataKey="value" 
+                stroke="#9945FF" 
+                fillOpacity={1}
+                fill="url(#colorProfit)" 
+                isAnimationActive={true}
+                animationDuration={1000}
+                animationEasing="ease-out"
+                activeDot={{ r: 6, stroke: '#9945FF', strokeWidth: 2, fill: 'white' }}
+                dot={{ stroke: '#9945FF', strokeWidth: 1, fill: 'white', r: 3 }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
       </CardContent>
     </Card>
   );

@@ -63,23 +63,13 @@ const generateMockBots = (): Bot[] => {
   ];
 };
 
-const generateProfitData = (): {daily: ProfitData[], weekly: ProfitData[], monthly: ProfitData[]} => {
-  const daily = Array.from({ length: 24 }, (_, i) => ({
-    timestamp: subHours(new Date(), 23 - i),
-    value: Math.random() * 200 - 50
-  }));
-  
-  const weekly = Array.from({ length: 7 }, (_, i) => ({
-    timestamp: subDays(new Date(), 6 - i),
-    value: Math.random() * 500 - 100
-  }));
-  
+const generateProfitData = (): {monthly: ProfitData[]} => {
   const monthly = Array.from({ length: 30 }, (_, i) => ({
     timestamp: subDays(new Date(), 29 - i),
     value: Math.random() * 1000 - 200
   }));
   
-  return { daily, weekly, monthly };
+  return { monthly };
 };
 
 const Dashboard = () => {
@@ -92,8 +82,6 @@ const Dashboard = () => {
     weeklyProfit: 0,
   });
   const [profitData, setProfitData] = useState({
-    daily: [] as ProfitData[],
-    weekly: [] as ProfitData[],
     monthly: [] as ProfitData[]
   });
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -199,71 +187,9 @@ const Dashboard = () => {
             </div>
           </div>
           
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-            <Card className="border backdrop-blur-sm bg-black/30 glass-dark" {...staggeredAnimationProps(0)}>
-              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                <CardTitle className="text-sm font-medium">Active Bots</CardTitle>
-                <BotIcon className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.activeBots}</div>
-                <p className="text-xs text-muted-foreground">
-                  out of {stats.totalBots} total
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card className="border backdrop-blur-sm bg-black/30 glass-dark" {...staggeredAnimationProps(1)}>
-              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                <CardTitle className="text-sm font-medium">Total Profit</CardTitle>
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className={`text-2xl font-bold ${stats.totalProfit >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                  {formatCurrency(stats.totalProfit)}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  All time
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card className="border backdrop-blur-sm bg-black/30 glass-dark" {...staggeredAnimationProps(2)}>
-              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                <CardTitle className="text-sm font-medium">Daily Profit</CardTitle>
-                <Activity className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className={`text-2xl font-bold ${stats.dailyProfit >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                  {formatCurrency(stats.dailyProfit)}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Last 24 hours
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card className="border backdrop-blur-sm bg-black/30 glass-dark" {...staggeredAnimationProps(3)}>
-              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                <CardTitle className="text-sm font-medium">Weekly Profit</CardTitle>
-                <Cpu className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className={`text-2xl font-bold ${stats.weeklyProfit >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                  {formatCurrency(stats.weeklyProfit)}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Last 7 days
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-          
           <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-3 mb-8" {...animationProps}>
             <div className="md:col-span-3 lg:col-span-3">
               <ProfitChart 
-                dailyData={profitData.daily}
-                weeklyData={profitData.weekly}
                 monthlyData={profitData.monthly}
                 totalProfit={stats.totalProfit}
               />

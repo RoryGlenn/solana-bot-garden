@@ -41,6 +41,9 @@ const CoinLaunch = () => {
       setTokenSymbol('');
       setTotalSupply('');
       setInitialPrice('');
+      
+      // Switch to tokens tab to see the new token
+      setActiveTab('tokens');
     } catch (error) {
       toast({
         title: "Launch failed",
@@ -76,7 +79,7 @@ const CoinLaunch = () => {
             <Tabs defaultValue="launch" className="w-full" value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="grid w-full max-w-md grid-cols-2">
                 <TabsTrigger value="launch">Launch Token</TabsTrigger>
-                <TabsTrigger value="history">Launch History</TabsTrigger>
+                <TabsTrigger value="tokens">My Tokens</TabsTrigger>
               </TabsList>
               
               <TabsContent value="launch" className="mt-6">
@@ -164,23 +167,23 @@ const CoinLaunch = () => {
                 </Card>
               </TabsContent>
               
-              <TabsContent value="history" className="mt-6">
+              <TabsContent value="tokens" className="mt-6">
                 <Card className="border backdrop-blur-sm bg-black/30 glass-dark">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Coins className="h-5 w-5 text-solana" />
-                      Launch History
+                      My Tokens
                     </CardTitle>
                     <CardDescription>
-                      View the history of tokens you've launched
+                      Manage your launched tokens
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {/* If there's no launch history yet */}
+                      {/* If there are no tokens yet */}
                       <div className="text-center py-10">
                         <Rocket className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                        <h3 className="text-lg font-medium">No launches yet</h3>
+                        <h3 className="text-lg font-medium">No tokens found</h3>
                         <p className="text-muted-foreground mb-4">
                           You haven't launched any tokens yet
                         </p>
@@ -189,7 +192,7 @@ const CoinLaunch = () => {
                         </Button>
                       </div>
                       
-                      {/* For future implementations, show launch history here */}
+                      {/* For future implementations, show launched tokens here */}
                     </div>
                   </CardContent>
                 </Card>

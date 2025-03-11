@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '@/components/Sidebar';
@@ -232,39 +231,6 @@ const Settings = () => {
                         handleToggleSetting('IP Lock', value);
                       }} 
                     />
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card className="backdrop-blur-sm bg-black/30">
-                <CardHeader>
-                  <CardTitle>API Access</CardTitle>
-                  <CardDescription>
-                    Manage API keys for automated trading
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="apiKey">API Key</Label>
-                      <div className="flex gap-2">
-                        <Input 
-                          id="apiKey" 
-                          value="●●●●●●●●●●●●●●●●" 
-                          disabled 
-                          className="flex-1"
-                        />
-                        <Button variant="outline">
-                          Show
-                        </Button>
-                      </div>
-                    </div>
-                    
-                    <Button 
-                      className="w-full bg-gradient-to-r from-solana to-accent hover:shadow-lg transition-all duration-300"
-                    >
-                      Generate New API Key
-                    </Button>
                   </div>
                 </CardContent>
               </Card>
