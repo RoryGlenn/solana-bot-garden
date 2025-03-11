@@ -363,8 +363,8 @@ const Wallets = () => {
       setWallets(updatedWallets);
       
       toast({
-        title: "Tokens Withdrawn",
-        description: `Withdrew ${fundAmount} SOL from ${targetWallet.label}.`,
+        title: "Wallet Withdrawn",
+        description: `Withdrew ${fundAmount} SOL from ${targetWallet.label} and sent to funder wallet.`,
       });
     }
 
@@ -789,7 +789,7 @@ const Wallets = () => {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <div className="flex gap-2">
-              <AlertDialogAction 
+              <Button 
                 onClick={() => {
                   setActionType('withdraw');
                   processFundWithdraw();
@@ -797,8 +797,8 @@ const Wallets = () => {
                 className="bg-amber-500 text-white hover:bg-amber-500/90"
               >
                 Withdraw
-              </AlertDialogAction>
-              <AlertDialogAction 
+              </Button>
+              <Button 
                 onClick={() => {
                   setActionType('fund');
                   processFundWithdraw();
@@ -806,7 +806,7 @@ const Wallets = () => {
                 className="bg-emerald-500 text-white hover:bg-emerald-500/90"
               >
                 Fund
-              </AlertDialogAction>
+              </Button>
             </div>
           </AlertDialogFooter>
         </AlertDialogContent>
