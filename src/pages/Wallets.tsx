@@ -57,6 +57,8 @@ const Wallets = () => {
   const [privateKey, setPrivateKey] = useState('');
   const [isDistributeDialogOpen, setIsDistributeDialogOpen] = useState(false);
   const [distributionRange, setDistributionRange] = useState([0.5, 2]);
+  const [minDistribution, setMinDistribution] = useState("0.5");
+  const [maxDistribution, setMaxDistribution] = useState("2");
   const [isFundWithdrawDialogOpen, setIsFundWithdrawDialogOpen] = useState(false);
   const [currentActionWallet, setCurrentActionWallet] = useState<string | null>(null);
   const [actionType, setActionType] = useState<'fund' | 'withdraw'>('fund');
@@ -206,7 +208,35 @@ const Wallets = () => {
     }
 
     setDistributionRange([0.5, 2]);
+    setMinDistribution("0.5");
+    setMaxDistribution("2");
     setIsDistributeDialogOpen(true);
+  };
+
+  const handleMinDistributionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setMinDistribution(value);
+    const minVal = parseFloat(value) || 0.1;
+    const maxVal = parseFloat(maxDistribution) || 25;
+    if (minVal < maxVal) {
+      setDistributionRange([minVal, distributionRange[1]]);
+    }
+  };
+
+  const handleMaxDistributionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setMaxDistribution(value);
+    const maxVal = parseFloat(value) || 25;
+    const minVal = parseFloat(minDistribution) || 0.1;
+    if (maxVal > minVal) {
+      setDistributionRange([distributionRange[0], maxVal]);
+    }
+  };
+
+  const handleDistributionRangeChange = (values: number[]) => {
+    setDistributionRange(values);
+    setMinDistribution(values[0].toString());
+    setMaxDistribution(values[1].toString());
   };
 
   const distributeTokens = () => {
@@ -227,7 +257,9 @@ const Wallets = () => {
     const distributionAmounts: { [address: string]: number } = {};
 
     regularWallets.forEach(wallet => {
-      const randomAmount = Math.random() * (distributionRange[1] - distributionRange[0]) + distributionRange[0];
+      const minVal = parseFloat(minDistribution) || 0.1;
+      const maxVal = parseFloat(maxDistribution) || 25;
+      const randomAmount = Math.random() * (maxVal - minVal) + minVal;
       const roundedAmount = Math.round(randomAmount * 100) / 100;
       distributionAmounts[wallet.address] = roundedAmount;
       totalToDistribute += roundedAmount;
@@ -653,21 +685,51 @@ const Wallets = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="py-4 space-y-6">
-            <div className="space-y-2">
+            <div className="space-y-4">
               <div className="flex justify-between">
                 <Label>Distribution Range (SOL)</Label>
                 <span className="text-sm text-muted-foreground">
-                  {distributionRange[0].toFixed(1)} - {distributionRange[1].toFixed(1)} SOL
+                  {parseFloat(minDistribution).toFixed(1)} - {parseFloat(maxDistribution).toFixed(1)} SOL
                 </span>
               </div>
-              <Slider 
-                value={distributionRange}
-                onValueChange={setDistributionRange}
-                max={25}
-                step={0.5}
-                min={0.1}
-                className="[&_[data-orientation=horizontal]]:h-2 [&_[data-orientation=horizontal]>[data-state]]:bg-purple-500"
-              />
+              
+              <div className="flex gap-4 items-center">
+                <div className="w-1/3">
+                  <Label htmlFor="min-distribution" className="text-xs mb-1 block">Min (SOL)</Label>
+                  <Input 
+                    id="min-distribution"
+                    type="number"
+                    value={minDistribution}
+                    onChange={handleMinDistributionChange}
+                    min="0.1"
+                    step="0.1"
+                    className="border-purple-500/30 focus-visible:ring-purple-500"
+                  />
+                </div>
+                <div className="w-1/3 flex-grow">
+                  <Slider 
+                    value={distributionRange}
+                    onValueChange={handleDistributionRangeChange}
+                    max={25}
+                    step={0.1}
+                    min={0.1}
+                    className="[&_[data-orientation=horizontal]]:h-2 [&_[data-orientation=horizontal]>[data-state]]:bg-purple-500"
+                  />
+                </div>
+                <div className="w-1/3">
+                  <Label htmlFor="max-distribution" className="text-xs mb-1 block">Max (SOL)</Label>
+                  <Input 
+                    id="max-distribution"
+                    type="number"
+                    value={maxDistribution}
+                    onChange={handleMaxDistributionChange}
+                    min="0.1"
+                    step="0.1"
+                    max="100"
+                    className="border-purple-500/30 focus-visible:ring-purple-500"
+                  />
+                </div>
+              </div>
             </div>
           </div>
           <AlertDialogFooter>
@@ -686,16 +748,11 @@ const Wallets = () => {
         <AlertDialogContent className="backdrop-blur-sm bg-black/50 border-emerald-500">
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
-              {actionType === 'fund' ? 
-                <Upload className="h-5 w-5 text-emerald-500" /> :
-                <Download className="h-5 w-5 text-emerald-500" />
-              }
-              {actionType === 'fund' ? 'Fund Wallet' : 'Withdraw Tokens'}
+              <ArrowUpDown className="h-5 w-5 text-emerald-500" />
+              Fund or Withdraw
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {actionType === 'fund' 
-                ? 'Specify the amount to send from the funder wallet to this wallet.' 
-                : 'Specify the amount to withdraw from this wallet to the funder wallet.'}
+              Transfer tokens between this wallet and the funder wallet.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="py-4 space-y-6">
@@ -725,27 +782,32 @@ const Wallets = () => {
                 max={10}
                 step={0.1}
                 min={0.1}
-                className="[&>.relative]:bg-emerald-800/20"
+                className="[&>.relative]:bg-emerald-800/20 [&_[data-orientation=horizontal]]:h-2 [&_[data-orientation=horizontal]>[data-state]]:bg-emerald-500"
               />
             </div>
           </div>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            {actionType === 'fund' ? (
+            <div className="flex gap-2">
               <AlertDialogAction 
-                onClick={processFundWithdraw} 
-                className="bg-emerald-500 text-white hover:bg-emerald-500/90"
-              >
-                Fund
-              </AlertDialogAction>
-            ) : (
-              <AlertDialogAction 
-                onClick={processFundWithdraw} 
+                onClick={() => {
+                  setActionType('withdraw');
+                  processFundWithdraw();
+                }} 
                 className="bg-amber-500 text-white hover:bg-amber-500/90"
               >
                 Withdraw
               </AlertDialogAction>
-            )}
+              <AlertDialogAction 
+                onClick={() => {
+                  setActionType('fund');
+                  processFundWithdraw();
+                }} 
+                className="bg-emerald-500 text-white hover:bg-emerald-500/90"
+              >
+                Fund
+              </AlertDialogAction>
+            </div>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
