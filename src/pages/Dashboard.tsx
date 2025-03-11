@@ -233,13 +233,13 @@ const Dashboard = () => {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
             <Card className="border backdrop-blur-sm bg-black/30 glass-dark" {...staggeredAnimationProps(0)}>
               <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                <CardTitle className="text-sm font-medium">Total Bots</CardTitle>
+                <CardTitle className="text-sm font-medium">Active Bots</CardTitle>
                 <BotIcon className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.totalBots}</div>
+                <div className="text-2xl font-bold">{stats.activeBots}</div>
                 <p className="text-xs text-muted-foreground">
-                  {stats.activeBots} active
+                  out of {stats.totalBots} total
                 </p>
               </CardContent>
             </Card>
