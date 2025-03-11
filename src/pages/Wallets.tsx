@@ -377,34 +377,32 @@ const Wallets = () => {
             </p>
           </div>
           
-          <div className="mb-6 flex flex-wrap justify-between items-center gap-4" {...animationProps}>
-            <div className="flex flex-wrap space-x-4 gap-y-2">
-              <Button onClick={() => createWallet('regular')} className="bg-gradient-to-r from-solana to-accent">
-                <Plus className="mr-2 h-4 w-4" />
-                Create Wallet
-              </Button>
+          {/* Reorganized buttons into a single horizontal line */}
+          <div className="mb-6 flex flex-wrap items-center gap-3" {...animationProps}>
+            <Button onClick={() => createWallet('regular')} className="bg-gradient-to-r from-solana to-accent">
+              <Plus className="mr-2 h-4 w-4" />
+              Create Wallet
+            </Button>
+            <Button 
+              onClick={() => createWallet('developer')}
+              variant="outline" 
+              className="border-solana text-solana hover:bg-solana/10"
+            >
+              <Code className="mr-2 h-4 w-4" />
+              {hasDevWallet ? 'Create New Dev Wallet' : 'Create Dev Wallet'}
+            </Button>
+            {!hasFunderWallet && (
               <Button 
-                onClick={() => createWallet('developer')}
+                onClick={openFunderDialog}
                 variant="outline" 
-                className="border-solana text-solana hover:bg-solana/10"
+                className="border-amber-500 text-amber-500 hover:bg-amber-500/10"
               >
-                <Code className="mr-2 h-4 w-4" />
-                {hasDevWallet ? 'Create New Dev Wallet' : 'Create Dev Wallet'}
+                <Key className="mr-2 h-4 w-4" />
+                Add Funder Wallet
               </Button>
-              {!hasFunderWallet && (
-                <Button 
-                  onClick={openFunderDialog}
-                  variant="outline" 
-                  className="border-amber-500 text-amber-500 hover:bg-amber-500/10"
-                >
-                  <Key className="mr-2 h-4 w-4" />
-                  Add Funder Wallet
-                </Button>
-              )}
-            </div>
-            
+            )}
             {hasFunderWallet && (
-              <div className="flex flex-wrap space-x-4 gap-y-2">
+              <>
                 <Button 
                   onClick={collectAllTokens}
                   variant="outline" 
@@ -421,7 +419,7 @@ const Wallets = () => {
                   <Shuffle className="mr-2 h-4 w-4" />
                   Distribute Tokens
                 </Button>
-              </div>
+              </>
             )}
           </div>
           
@@ -707,7 +705,7 @@ const Wallets = () => {
         </AlertDialogContent>
       </AlertDialog>
       
-      {/* Fund/Withdraw Dialog */}
+      {/* Updated Fund/Withdraw Dialog with text input */}
       <AlertDialog open={isFundWithdrawDialogOpen} onOpenChange={setIsFundWithdrawDialogOpen}>
         <AlertDialogContent className="backdrop-blur-sm bg-black/50 border-emerald-500">
           <AlertDialogHeader>
@@ -726,8 +724,21 @@ const Wallets = () => {
           </AlertDialogHeader>
           <div className="py-4 space-y-6">
             <div className="space-y-2">
+              <Label htmlFor="fund-amount">Amount (SOL)</Label>
+              <Input
+                id="fund-amount"
+                type="number"
+                value={fundAmount}
+                onChange={(e) => setFundAmount(parseFloat(e.target.value) || 0)}
+                min="0.1"
+                step="0.1"
+                placeholder="Enter amount"
+                className="border-emerald-500/30 focus-visible:ring-emerald-500"
+              />
+            </div>
+            <div className="space-y-2">
               <div className="flex justify-between">
-                <Label>Amount (SOL)</Label>
+                <Label>Quick Select</Label>
                 <span className="text-sm text-muted-foreground">
                   {fundAmount} SOL
                 </span>
@@ -745,10 +756,22 @@ const Wallets = () => {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction 
-              onClick={processFundWithdraw} 
+              onClick={() => {
+                setActionType('fund');
+                processFundWithdraw();
+              }} 
               className="bg-emerald-500 text-white hover:bg-emerald-500/90"
             >
-              {actionType === 'fund' ? 'Fund' : 'Withdraw'}
+              Fund
+            </AlertDialogAction>
+            <AlertDialogAction 
+              onClick={() => {
+                setActionType('withdraw');
+                processFundWithdraw();
+              }} 
+              className="bg-amber-500 text-white hover:bg-amber-500/90"
+            >
+              Withdraw
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
