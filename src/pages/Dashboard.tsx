@@ -14,19 +14,13 @@ const generateMockBots = (): Bot[] => {
   return [
     {
       id: '1',
-      name: 'SOL/USDC Volume Bot',
+      name: 'Volume Bot',
       type: 'volume',
       status: 'active',
-      profit: 245.87,
-      createdAt: subDays(new Date(), 7),
-      lastActive: new Date(),
       config: {
-        tradingPair: 'SOL/USDC',
-        strategy: 'Moving Average',
-        risk: 'medium',
-        budget: 1000,
-        stopLoss: 5,
-        takeProfit: 15
+        targetToken: 'BONK',
+        tradingPair: 'BONK/SOL',// ticker of coin and sol ofc
+        risk: 'moderate',
       }
     },
     {
@@ -34,30 +28,22 @@ const generateMockBots = (): Bot[] => {
       name: 'Snipe Bot',
       type: 'snipe',
       status: 'active',
-      profit: 127.32,
-      createdAt: subDays(new Date(), 5),
-      lastActive: subHours(new Date(), 1),
       config: {
         targetToken: 'BONK',
-        tradingPair: 'BONK/USDC',
-        strategy: 'Momentum',
+        tradingPair: 'BONK/SOL',
         risk: 'high',
-        budget: 500
       }
     },
     {
       id: '4',
-      name: 'DeGods Whale Tracker',
+      name: 'Copy Trade Bot',
       type: 'copy-trade',
       status: 'stopped',
-      profit: 412.65,
-      createdAt: subDays(new Date(), 14),
-      lastActive: subDays(new Date(), 2),
       config: {
-        walletAddress: 'Dg1...',
+        targetWallet: 'HJLqkCFiNMUsXvqA9btLXFwKpWgCAXXXmNBFnSELvXSC',
         strategy: 'Follow Trades',
-        risk: 'medium',
-        budget: 1500
+        risk: 'high',
+        buyIn: 1.0 // 1 sol... when buying in it should display the the link on axiom and ca for the coin
       }
     }
   ];
@@ -98,7 +84,7 @@ const Dashboard = () => {
     const mockBots = generateMockBots();
     setBots(mockBots);
     
-    const totalProfit = mockBots.reduce((sum, bot) => sum + bot.profit, 0);
+    const totalProfit = profitData.monthly.reduce((sum, data) => sum + data.value, 0);
     const activeBots = mockBots.filter(bot => bot.status === 'active').length;
     
     setStats({
@@ -134,7 +120,6 @@ const Dashboard = () => {
         return {
           ...bot,
           status: newStatus,
-          lastActive: action === 'play' ? new Date() : bot.lastActive
         };
       }
       return bot;

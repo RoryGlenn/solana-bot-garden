@@ -70,7 +70,7 @@ const BotCard = ({ bot, onPlay, onPause, onViewDetails }: BotCardProps) => {
               </Badge>
             </CardDescription>
           </div>
-          <div className="flex flex-col items-end">
+          {/* <div className="flex flex-col items-end">
             <div className={`font-medium text-base ${bot.profit >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
               {formatProfit(bot.profit)}
             </div>
@@ -78,7 +78,7 @@ const BotCard = ({ bot, onPlay, onPause, onViewDetails }: BotCardProps) => {
               <Clock className="h-3 w-3 mr-1" />
               {formatDistanceToNow(new Date(bot.lastActive), { addSuffix: true })}
             </div>
-          </div>
+          </div> */}
         </div>
       </CardHeader>
       <CardContent className="p-4 pt-2">

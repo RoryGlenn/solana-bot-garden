@@ -6,21 +6,12 @@ export interface Bot {
   name: string;
   type: BotType;
   status: 'active' | 'paused' | 'stopped';
-  profit: number;
-  createdAt: Date;
-  lastActive: Date;
   config: BotConfig;
 }
 
 export interface BotConfig {
   targetToken?: string;
   tradingPair?: string;
-  budget?: number;
-  strategy?: string;
-  risk?: 'low' | 'medium' | 'high';
-  stopLoss?: number;
-  takeProfit?: number;
-  walletAddress?: string;
   [key: string]: any;
 }
 
