@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/use-toast";
 import { Rocket, Coins, ArrowUp, Image as ImageIcon, FileText, Link as LinkIcon, MessageCircle, Clock, Wallet } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 
 const CoinLaunch = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -22,6 +23,7 @@ const CoinLaunch = () => {
   const [devBuyIn, setDevBuyIn] = useState('');
   const [devWalletSellDelay, setDevWalletSellDelay] = useState('');
   const [multiWalletBuyDelay, setMultiWalletBuyDelay] = useState('');
+  const [humanizeMultiWalletBuy, setHumanizeMultiWalletBuy] = useState(false);
   const [tokenImage, setTokenImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -241,19 +243,19 @@ const CoinLaunch = () => {
                           </div>
                         </div>
                         
-                        {/* New fields for developer wallet sell delay and multi-wallet buy delay */}
+                        {/* Updated fields for developer wallet sell delay and multi-wallet buy delay */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <Label htmlFor="devWalletSellDelay" className="flex items-center gap-1">
                               <Wallet className="h-4 w-4" />
-                              Developer Wallet Sell Delay (minutes)
+                              Developer Wallet Sell Delay (seconds)
                             </Label>
                             <Input
                               id="devWalletSellDelay"
                               type="number"
                               min="0"
                               step="1"
-                              placeholder="Optional: e.g. 30"
+                              placeholder="Optional: e.g. 1800"
                               value={devWalletSellDelay}
                               onChange={(e) => setDevWalletSellDelay(e.target.value)}
                             />
@@ -276,8 +278,18 @@ const CoinLaunch = () => {
                               onChange={(e) => setMultiWalletBuyDelay(e.target.value)}
                             />
                             <p className="text-xs text-muted-foreground">
-                              Delay between buy-ins from multiple wallets to prevent sandwich attacks
+                              Delay after which the bot wallets will all buy in
                             </p>
+                            <div className="flex items-center space-x-2 mt-2">
+                              <Switch
+                                id="humanizeMultiWalletBuy"
+                                checked={humanizeMultiWalletBuy}
+                                onCheckedChange={setHumanizeMultiWalletBuy}
+                              />
+                              <Label htmlFor="humanizeMultiWalletBuy" className="text-xs">
+                                Humanize multi-wallet buy-ins (randomize timing)
+                              </Label>
+                            </div>
                           </div>
                         </div>
                       </div>
