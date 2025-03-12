@@ -1,7 +1,7 @@
 import React from 'react';
 import { Bot } from "@/types";
 import { formatDistanceToNow } from "date-fns";
-import { Activity, Clock, PlayCircle, PauseCircle, ChevronRight } from "lucide-react";
+import { Activity, Clock, PlayCircle, PauseCircle, ChevronRight, Crosshair } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +20,7 @@ const BotCard: React.FC<BotCardProps> = ({ bot, onPlay, onPause, onViewDetails }
       case 'volume':
         return <Activity className="h-4 w-4" />;
       case 'snipe':
-        return <Activity className="h-4 w-4" />;
+        return <Crosshair className="h-4 w-4" />;
       case 'copy-trade':
         return <Activity className="h-4 w-4" />;
       default:

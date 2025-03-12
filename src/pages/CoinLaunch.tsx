@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/use-toast";
-import { Rocket, Coins, ArrowUp, Image as ImageIcon, FileText, Link as LinkIcon, MessageCircle } from "lucide-react";
+import { Rocket, Coins, ArrowUp, Image as ImageIcon, FileText, Link as LinkIcon, MessageCircle, Clock, Wallet } from "lucide-react";
 
 const CoinLaunch = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -20,6 +20,8 @@ const CoinLaunch = () => {
   const [websiteLink, setWebsiteLink] = useState('');
   const [telegramLink, setTelegramLink] = useState('');
   const [devBuyIn, setDevBuyIn] = useState('');
+  const [devWalletSellDelay, setDevWalletSellDelay] = useState('');
+  const [multiWalletBuyDelay, setMultiWalletBuyDelay] = useState('');
   const [tokenImage, setTokenImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -63,6 +65,8 @@ const CoinLaunch = () => {
       setWebsiteLink('');
       setTelegramLink('');
       setDevBuyIn('');
+      setDevWalletSellDelay('');
+      setMultiWalletBuyDelay('');
       setTokenImage(null);
       setImagePreview(null);
       
@@ -234,6 +238,46 @@ const CoinLaunch = () => {
                               value={devBuyIn}
                               onChange={(e) => setDevBuyIn(e.target.value)}
                             />
+                          </div>
+                        </div>
+                        
+                        {/* New fields for developer wallet sell delay and multi-wallet buy delay */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="devWalletSellDelay" className="flex items-center gap-1">
+                              <Wallet className="h-4 w-4" />
+                              Developer Wallet Sell Delay (minutes)
+                            </Label>
+                            <Input
+                              id="devWalletSellDelay"
+                              type="number"
+                              min="0"
+                              step="1"
+                              placeholder="Optional: e.g. 30"
+                              value={devWalletSellDelay}
+                              onChange={(e) => setDevWalletSellDelay(e.target.value)}
+                            />
+                            <p className="text-xs text-muted-foreground">
+                              Prevent developer wallet from selling for this duration after launch
+                            </p>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="multiWalletBuyDelay" className="flex items-center gap-1">
+                              <Clock className="h-4 w-4" />
+                              Multi-Wallet Buy-In Delay (seconds)
+                            </Label>
+                            <Input
+                              id="multiWalletBuyDelay"
+                              type="number"
+                              min="0"
+                              step="1"
+                              placeholder="Optional: e.g. 15"
+                              value={multiWalletBuyDelay}
+                              onChange={(e) => setMultiWalletBuyDelay(e.target.value)}
+                            />
+                            <p className="text-xs text-muted-foreground">
+                              Delay between buy-ins from multiple wallets to prevent sandwich attacks
+                            </p>
                           </div>
                         </div>
                       </div>

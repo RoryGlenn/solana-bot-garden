@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '@/components/Sidebar';
@@ -12,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/use-toast";
-import { Zap, Save, Play, Pause, BarChart, RefreshCw, Bolt, Sliders, Search } from "lucide-react";
+import { Crosshair, Save, Play, Pause, BarChart, RefreshCw, Bolt, Sliders, Search } from "lucide-react";
 import { subDays, subHours } from 'date-fns';
 
 const SnipeBots = () => {
@@ -63,7 +62,7 @@ const SnipeBots = () => {
           <div className="flex items-center justify-between mb-8" {...animationProps}>
             <div>
               <h1 className="text-3xl font-bold tracking-tight flex items-center">
-                <Zap className="mr-3 h-7 w-7 text-solana" />
+                <Crosshair className="mr-3 h-7 w-7 text-solana" />
                 Snipe Bot
               </h1>
               <p className="text-muted-foreground">
