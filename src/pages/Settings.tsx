@@ -13,8 +13,8 @@ import { Settings as SettingsIcon, Shield, Bell, Moon, Sun } from "lucide-react"
 const Settings = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [notifications, setNotifications] = useState(true);
-  const [darkMode, setDarkMode] = useState(true);
-  const [ipLock, setIpLock] = useState(true);
+  // const [darkMode, setDarkMode] = useState(true);
+  // const [ipLock, setIpLock] = useState(true);
   const [username, setUsername] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -190,7 +190,7 @@ const Settings = () => {
                     />
                   </div>
                   
-                  <div className="flex items-center justify-between">
+                  {/* <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <div className="flex items-center">
                         {darkMode ? 
@@ -231,7 +231,7 @@ const Settings = () => {
                         handleToggleSetting('IP Lock', value);
                       }} 
                     />
-                  </div>
+                  </div> */}
                 </CardContent>
               </Card>
             </div>

@@ -9,7 +9,7 @@ import { Lock, Mail, User } from "lucide-react";
 
 const SignupForm = () => {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
+  // const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -19,7 +19,7 @@ const SignupForm = () => {
     e.preventDefault();
     
     // Simple validation
-    if (!username || !email || !password) {
+    if (!username /*|| !email*/ || !password) {
       toast({
         title: "Error",
         description: "Please fill in all required fields.",
@@ -46,7 +46,7 @@ const SignupForm = () => {
       // In a real app, send registration data to a backend
       localStorage.setItem('user', JSON.stringify({ 
         username, 
-        email,
+        // email,
         id: 'user-' + Math.random().toString(36).substr(2, 9), 
         ipAddress: '127.0.0.1' 
       }));
@@ -83,7 +83,7 @@ const SignupForm = () => {
             </div>
           </div>
           
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <div className="relative">
               <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
@@ -95,7 +95,7 @@ const SignupForm = () => {
                 disabled={isLoading}
               />
             </div>
-          </div>
+          </div> */}
           
           <div className="space-y-2">
             <div className="relative">

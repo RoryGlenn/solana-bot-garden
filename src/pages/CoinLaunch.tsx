@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '@/components/Sidebar';
@@ -24,6 +23,7 @@ const CoinLaunch = () => {
   const [devWalletSellDelay, setDevWalletSellDelay] = useState('');
   const [multiWalletBuyDelay, setMultiWalletBuyDelay] = useState('');
   const [humanizeMultiWalletBuy, setHumanizeMultiWalletBuy] = useState(false);
+  const [useMultiWalletBuy, setUseMultiWalletBuy] = useState(false);
   const [tokenImage, setTokenImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -260,7 +260,7 @@ const CoinLaunch = () => {
                               onChange={(e) => setDevWalletSellDelay(e.target.value)}
                             />
                             <p className="text-xs text-muted-foreground">
-                              Prevent developer wallet from selling for this duration after launch
+                              Delay before developer wallet will sell. 0 means no sell
                             </p>
                           </div>
                           <div className="space-y-2">
@@ -273,22 +273,35 @@ const CoinLaunch = () => {
                               type="number"
                               min="0"
                               step="1"
-                              placeholder="Optional: e.g. 15"
+                              placeholder="0"
                               value={multiWalletBuyDelay}
                               onChange={(e) => setMultiWalletBuyDelay(e.target.value)}
+                              disabled={!useMultiWalletBuy} // Disable input if useMultiWalletBuy is false
                             />
                             <p className="text-xs text-muted-foreground">
-                              Delay after which the bot wallets will all buy in
+                              Delay before all bot wallets will buy in
                             </p>
-                            <div className="flex items-center space-x-2 mt-2">
-                              <Switch
-                                id="humanizeMultiWalletBuy"
-                                checked={humanizeMultiWalletBuy}
-                                onCheckedChange={setHumanizeMultiWalletBuy}
-                              />
-                              <Label htmlFor="humanizeMultiWalletBuy" className="text-xs">
-                                Humanize multi-wallet buy-ins (randomize timing)
-                              </Label>
+                            <div className="flex items-center space-x-4 mt-2">
+                              <div className="flex items-center space-x-2">
+                                <Switch
+                                  id="useMultiWalletBuy"
+                                  checked={useMultiWalletBuy}
+                                  onCheckedChange={setUseMultiWalletBuy}
+                                />
+                                <Label htmlFor="useMultiWalletBuy" className="text-xs">
+                                  Use multi-wallet buy-ins
+                                </Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <Switch
+                                  id="humanizeMultiWalletBuy"
+                                  checked={humanizeMultiWalletBuy}
+                                  onCheckedChange={setHumanizeMultiWalletBuy}
+                                />
+                                <Label htmlFor="humanizeMultiWalletBuy" className="text-xs">
+                                  Humanize multi-wallet buy-ins
+                                </Label>
+                              </div>
                             </div>
                           </div>
                         </div>
