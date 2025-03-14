@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '@/components/Sidebar';
@@ -131,6 +130,9 @@ const SnipeBots = () => {
                               {...field}
                             />
                           </FormControl>
+                          <FormDescription>
+                            Monitor this developer address and automatically snipe newly created tokens when they deploy on pump.fun
+                          </FormDescription>
                         </FormItem>
                       )}
                     />
@@ -187,10 +189,6 @@ const SnipeBots = () => {
                         </div>
                       )}
                     </div>
-                    
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Monitor this developer address and automatically snipe newly created tokens when they deploy on pump.fun
-                    </p>
                   </div>
                 </Form>
               </CardContent>
