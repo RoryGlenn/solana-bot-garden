@@ -23,6 +23,7 @@ interface CopyTradeBotFormValues {
   minMarketCap: string;
   maxMarketCap: string;
   checkVolume: boolean;
+  minVolume: string;
 }
 
 const CopyTradeBot = () => {
@@ -39,11 +40,13 @@ const CopyTradeBot = () => {
       checkMarketCap: false,
       minMarketCap: '10000',
       maxMarketCap: '1000000',
-      checkVolume: false
+      checkVolume: false,
+      minVolume: '5000'
     }
   });
   
   const watchCheckMarketCap = form.watch("checkMarketCap");
+  const watchCheckVolume = form.watch("checkVolume");
   
   useEffect(() => {
     const user = localStorage.getItem('user');
@@ -107,6 +110,19 @@ const CopyTradeBot = () => {
           toast({
             title: "Invalid Market Cap Range",
             description: "Maximum market cap must be greater than minimum market cap.",
+            variant: "destructive"
+          });
+          return;
+        }
+      }
+      
+      if (values.checkVolume) {
+        const minVolume = parseFloat(values.minVolume);
+        
+        if (isNaN(minVolume) || minVolume <= 0) {
+          toast({
+            title: "Invalid Minimum Volume",
+            description: "Please enter a valid minimum volume value.",
             variant: "destructive"
           });
           return;
@@ -321,6 +337,33 @@ const CopyTradeBot = () => {
                           )}
                         />
                       </div>
+                      
+                      {watchCheckVolume && (
+                        <div className="ml-10 space-y-4 pt-2">
+                          <FormField
+                            control={form.control}
+                            name="minVolume"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Minimum Volume ($)</FormLabel>
+                                <FormControl>
+                                  <Input 
+                                    type="number" 
+                                    min="0"
+                                    placeholder="5000" 
+                                    className="bg-background/50 backdrop-blur-sm focus:ring-2 focus:ring-solana/50" 
+                                    disabled={isActive}
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormDescription>
+                                  Minimum 24h trading volume threshold for copied tokens
+                                </FormDescription>
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </Form>
