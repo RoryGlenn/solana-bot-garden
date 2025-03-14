@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import { Copy, Play, Pause } from "lucide-react";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription } from "@/components/ui/form";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -20,6 +20,8 @@ interface CopyTradeBotFormValues {
   buyAmount: string;
   copyMode: 'buyOnly' | 'buyAndSell';
   checkMarketCap: boolean;
+  minMarketCap: string;
+  maxMarketCap: string;
   checkVolume: boolean;
 }
 
@@ -35,9 +37,13 @@ const CopyTradeBot = () => {
       buyAmount: '0.1',
       copyMode: 'buyOnly',
       checkMarketCap: false,
+      minMarketCap: '10000',
+      maxMarketCap: '1000000',
       checkVolume: false
     }
   });
+  
+  const watchCheckMarketCap = form.watch("checkMarketCap");
   
   useEffect(() => {
     const user = localStorage.getItem('user');
@@ -73,6 +79,38 @@ const CopyTradeBot = () => {
           variant: "destructive"
         });
         return;
+      }
+      
+      if (values.checkMarketCap) {
+        const minMcap = parseFloat(values.minMarketCap);
+        const maxMcap = parseFloat(values.maxMarketCap);
+        
+        if (isNaN(minMcap) || minMcap <= 0) {
+          toast({
+            title: "Invalid Minimum Market Cap",
+            description: "Please enter a valid minimum market cap value.",
+            variant: "destructive"
+          });
+          return;
+        }
+        
+        if (isNaN(maxMcap) || maxMcap <= 0) {
+          toast({
+            title: "Invalid Maximum Market Cap",
+            description: "Please enter a valid maximum market cap value.",
+            variant: "destructive"
+          });
+          return;
+        }
+        
+        if (minMcap >= maxMcap) {
+          toast({
+            title: "Invalid Market Cap Range",
+            description: "Maximum market cap must be greater than minimum market cap.",
+            variant: "destructive"
+          });
+          return;
+        }
       }
       
       setIsActive(true);
@@ -212,6 +250,56 @@ const CopyTradeBot = () => {
                           )}
                         />
                       </div>
+                      
+                      {watchCheckMarketCap && (
+                        <div className="ml-10 space-y-4 pt-2">
+                          <FormField
+                            control={form.control}
+                            name="minMarketCap"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Minimum Market Cap ($)</FormLabel>
+                                <FormControl>
+                                  <Input 
+                                    type="number" 
+                                    min="0"
+                                    placeholder="10000" 
+                                    className="bg-background/50 backdrop-blur-sm focus:ring-2 focus:ring-solana/50" 
+                                    disabled={isActive}
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormDescription>
+                                  Minimum market cap threshold for copied tokens
+                                </FormDescription>
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={form.control}
+                            name="maxMarketCap"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Maximum Market Cap ($)</FormLabel>
+                                <FormControl>
+                                  <Input 
+                                    type="number" 
+                                    min="0"
+                                    placeholder="1000000" 
+                                    className="bg-background/50 backdrop-blur-sm focus:ring-2 focus:ring-solana/50" 
+                                    disabled={isActive}
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormDescription>
+                                  Maximum market cap threshold for copied tokens
+                                </FormDescription>
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      )}
                       
                       <div className="flex items-center space-x-3">
                         <FormField
