@@ -12,6 +12,7 @@ interface PriceCardProps {
   features: string[];
   popular?: boolean;
   className?: string;
+  redirectToPayments?: boolean;
 }
 
 const PriceCard = ({
@@ -21,8 +22,17 @@ const PriceCard = ({
   features,
   popular = false,
   className,
+  redirectToPayments = false,
 }: PriceCardProps) => {
   const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    if (redirectToPayments) {
+      navigate("/payments");
+    } else {
+      navigate("/signup");
+    }
+  };
 
   return (
     <div
@@ -67,7 +77,7 @@ const PriceCard = ({
             ? "bg-gradient-to-r from-solana to-accent hover:shadow-lg hover:translate-y-[-1px]" 
             : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
         )}
-        onClick={() => navigate("/signup")}
+        onClick={handleGetStarted}
       >
         Get Started
       </Button>

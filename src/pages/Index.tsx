@@ -1,3 +1,4 @@
+
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -69,7 +70,7 @@ const Index = () => {
           </div>
           
           <div className="w-full lg:w-1/2 flex justify-center">
-            <Card className="w-full max-w-md glass glow border-0 p-6 animate-float">
+            <Card className="w-full max-w-md glass glow border-0 p-6">
               <LoginForm />
             </Card>
           </div>
@@ -147,6 +148,7 @@ const Index = () => {
                 "IP-locked security",
                 "Email notifications"
               ]}
+              redirectToPayments={true}
             />
             
             <PriceCard
@@ -164,6 +166,7 @@ const Index = () => {
                 "Future updates included"
               ]}
               popular={true}
+              redirectToPayments={true}
             />
           </div>
         </div>

@@ -13,6 +13,7 @@ import CopyTradeBot from "./pages/CopyTradeBots";
 import CoinLaunch from "./pages/CoinLaunch";
 import Wallets from "./pages/Wallets";
 import Settings from "./pages/Settings";
+import Payments from "./pages/Payments";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/coin-launch" element={<CoinLaunch />} />
           <Route path="/wallets" element={<Wallets />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/payments" element={<Payments />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
