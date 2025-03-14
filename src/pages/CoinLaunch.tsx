@@ -236,7 +236,7 @@ const CoinLaunch = () => {
                               id="devBuyIn"
                               type="number"
                               step="0.001"
-                              placeholder="0.5"
+                              placeholder="0.0"
                               value={devBuyIn}
                               onChange={(e) => setDevBuyIn(e.target.value)}
                             />
@@ -273,7 +273,7 @@ const CoinLaunch = () => {
                               type="number"
                               min="0"
                               step="1"
-                              placeholder="0"
+                              placeholder="0.0"
                               value={multiWalletBuyDelay}
                               onChange={(e) => setMultiWalletBuyDelay(e.target.value)}
                               disabled={!useMultiWalletBuy} // Disable input if useMultiWalletBuy is false

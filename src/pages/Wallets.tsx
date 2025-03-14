@@ -422,7 +422,7 @@ const Wallets = () => {
                   className="border-emerald-500 text-emerald-500 hover:bg-emerald-500/10"
                 >
                   <Download className="mr-2 h-4 w-4" />
-                  Collect All Tokens
+                  Collect All SOL
                 </Button>
                 <Button 
                   onClick={openDistributeDialog}
