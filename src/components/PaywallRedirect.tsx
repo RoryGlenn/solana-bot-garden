@@ -21,8 +21,9 @@ const PaywallRedirect = ({ children }: PaywallRedirectProps) => {
       return;
     }
     
-    if (isUserLoggedIn() && !hasUserPaid() && !isPublicPath) {
+    if (isUserLoggedIn() && !hasUserPaid() && !isPublicPath && location.pathname !== '/') {
       // Logged in but hasn't paid, redirect to payments
+      // But allow navigation to home page
       navigate('/payments');
     }
   }, [navigate, location.pathname]);
