@@ -7,12 +7,37 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import { Copy, Play, Pause } from "lucide-react";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+
+interface CopyTradeBotFormValues {
+  targetWallet: string;
+  buyAmount: string;
+  copyMode: 'buyOnly' | 'buyAndSell';
+  checkMarketCap: boolean;
+  checkVolume: boolean;
+}
 
 const CopyTradeBot = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const navigate = useNavigate();
   const { isVisible, animationProps, staggeredAnimationProps } = usePageTransition();
+  
+  const form = useForm<CopyTradeBotFormValues>({
+    defaultValues: {
+      targetWallet: '',
+      buyAmount: '0.1',
+      copyMode: 'buyOnly',
+      checkMarketCap: false,
+      checkVolume: false
+    }
+  });
   
   useEffect(() => {
     const user = localStorage.getItem('user');
@@ -23,11 +48,39 @@ const CopyTradeBot = () => {
   }, [navigate]);
   
   const handleToggleBot = () => {
-    setIsActive(!isActive);
-    toast({
-      title: isActive ? "Bot Stopped" : "Bot Started",
-      description: `Copy Trade Bot has been ${isActive ? "deactivated" : "activated"}.`
-    });
+    const values = form.getValues();
+    
+    if (isActive) {
+      setIsActive(false);
+      toast({
+        title: "Bot Stopped",
+        description: "Copy Trade Bot has been deactivated."
+      });
+    } else {
+      if (!values.targetWallet.trim()) {
+        toast({
+          title: "Missing Information",
+          description: "Please enter a wallet address to copy trades from.",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      if (!values.buyAmount || parseFloat(values.buyAmount) <= 0) {
+        toast({
+          title: "Invalid Amount",
+          description: "Please enter a valid buy amount.",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      setIsActive(true);
+      toast({
+        title: "Bot Started",
+        description: `Copy Trade Bot is now monitoring wallet: ${values.targetWallet.slice(0, 6)}...${values.targetWallet.slice(-4)} ${values.copyMode === 'buyOnly' ? '(Buy Only)' : '(Buy & Sell)'}`
+      });
+    }
   };
 
   return (
@@ -62,7 +115,127 @@ const CopyTradeBot = () => {
           <div {...animationProps}>
             <Card className="border backdrop-blur-sm bg-black/30 glass-dark min-h-[400px]">
               <CardContent className="p-6">
-                {/* Empty frame for future content */}
+                <Form {...form}>
+                  <div className="space-y-6">
+                    <FormField
+                      control={form.control}
+                      name="targetWallet"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-medium">Target Wallet Address</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Enter wallet address to copy trades from" 
+                              className="bg-background/50 backdrop-blur-sm focus:ring-2 focus:ring-solana/50" 
+                              disabled={isActive}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            The bot will monitor and copy trades from this wallet address
+                          </FormDescription>
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="buyAmount"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-medium">Buy Amount (SOL)</FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="number" 
+                              step="0.01"
+                              min="0.01"
+                              placeholder="0.1" 
+                              className="bg-background/50 backdrop-blur-sm focus:ring-2 focus:ring-solana/50" 
+                              disabled={isActive}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Amount in SOL to use for each copied transaction
+                          </FormDescription>
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="copyMode"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel className="text-base font-medium">Copy Mode</FormLabel>
+                          <FormControl>
+                            <RadioGroup
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                              className="flex flex-col space-y-1"
+                              disabled={isActive}
+                            >
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="buyOnly" id="buyOnly" />
+                                <Label htmlFor="buyOnly">Copy Buy Transactions Only</Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="buyAndSell" id="buyAndSell" />
+                                <Label htmlFor="buyAndSell">Copy Both Buy and Sell Transactions</Label>
+                              </div>
+                            </RadioGroup>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <div className="space-y-3">
+                      <Label className="text-base font-medium">Additional Checks</Label>
+                      
+                      <div className="flex items-center space-x-3 pt-2">
+                        <FormField
+                          control={form.control}
+                          name="checkMarketCap"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                  disabled={isActive}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                Check Market Cap
+                              </FormLabel>
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      
+                      <div className="flex items-center space-x-3">
+                        <FormField
+                          control={form.control}
+                          name="checkVolume"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                  disabled={isActive}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                Check Volume
+                              </FormLabel>
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </Form>
               </CardContent>
             </Card>
           </div>
