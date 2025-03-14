@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import PaywallRedirect from "@/components/PaywallRedirect";
 import Index from "./pages/Index";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
@@ -24,20 +25,22 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/volume-bot" element={<VolumeBot />} />
-          <Route path="/snipe-bot" element={<SnipeBot />} />
-          <Route path="/copy-trade-bot" element={<CopyTradeBot />} />
-          <Route path="/coin-launch" element={<CoinLaunch />} />
-          <Route path="/wallets" element={<Wallets />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/payments" element={<Payments />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <PaywallRedirect>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/volume-bot" element={<VolumeBot />} />
+            <Route path="/snipe-bot" element={<SnipeBot />} />
+            <Route path="/copy-trade-bot" element={<CopyTradeBot />} />
+            <Route path="/coin-launch" element={<CoinLaunch />} />
+            <Route path="/wallets" element={<Wallets />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/payments" element={<Payments />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </PaywallRedirect>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

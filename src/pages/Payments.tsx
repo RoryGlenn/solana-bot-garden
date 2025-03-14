@@ -4,7 +4,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
-import { CheckIcon, ArrowRight } from "lucide-react";
+import { CheckIcon, ArrowRight, LockIcon } from "lucide-react";
+import { hasUserPaid } from '@/utils/auth';
 
 const Payments = () => {
   const navigate = useNavigate();
@@ -17,6 +18,12 @@ const Payments = () => {
     if (!user) {
       // If not logged in, navigate to signup first
       navigate('/signup');
+      return;
+    }
+    
+    // If user has already paid, redirect to dashboard
+    if (hasUserPaid()) {
+      navigate('/dashboard');
     }
   }, [navigate]);
 
@@ -49,9 +56,12 @@ const Payments = () => {
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-background via-background to-accent/5 p-4">
       <Card className="w-full max-w-md glass glow border-0">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Complete Your Purchase</CardTitle>
+          <div className="mx-auto bg-solana/10 p-3 rounded-full mb-2">
+            <LockIcon className="h-8 w-8 text-solana" />
+          </div>
+          <CardTitle className="text-2xl font-bold text-center">Access Restricted</CardTitle>
           <CardDescription className="text-center">
-            You're just one step away from unlocking all features
+            Purchase a subscription to unlock all SolanaBot features
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
