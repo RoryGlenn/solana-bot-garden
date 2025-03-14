@@ -391,7 +391,7 @@ const Wallets = () => {
             </p>
           </div>
           
-          <div className="mb-6 flex flex-wrap items-center gap-3" {...animationProps}>
+          <div className="mb-6 flex flex-wrap items-center gap-4" {...animationProps}>
             <Button onClick={() => createWallet('regular')} className="bg-gradient-to-r from-solana to-accent">
               <Plus className="mr-2 h-4 w-4" />
               Create Wallet
@@ -816,3 +816,4 @@ const Wallets = () => {
 };
 
 export default Wallets;
+

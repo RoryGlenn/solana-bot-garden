@@ -54,6 +54,10 @@ const Payments = () => {
     }, 1500);
   };
 
+  const returnToHome = () => {
+    navigate('/');
+  };
+
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-background via-background to-accent/5 p-4">
       <Card className="w-full max-w-md glass glow border-0">
@@ -142,7 +146,7 @@ const Payments = () => {
         <CardFooter className="flex justify-center">
           <Button 
             variant="link" 
-            onClick={() => navigate('/')}
+            onClick={returnToHome}
             className="text-sm text-muted-foreground"
           >
             Cancel and return to home
