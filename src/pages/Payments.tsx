@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -53,7 +54,7 @@ const Payments = () => {
   };
 
   const returnToHome = () => {
-    // Force navigation to home without relying on the router's history
+    // Use a direct location change to bypass the router's history and any potential redirect logic
     window.location.href = '/';
   };
 

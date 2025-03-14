@@ -13,22 +13,21 @@ const PaywallRedirect = ({ children }: PaywallRedirectProps) => {
   const publicPaths = ['/', '/signup', '/payments'];
   
   useEffect(() => {
-    // If we're on the root path ('/'), we should never redirect regardless of payment status
+    // If we're on the root path ('/'), never redirect
     if (location.pathname === '/') {
       return;
     }
     
     const isPublicPath = publicPaths.includes(location.pathname);
     
+    // Only redirect non-public paths for users who aren't logged in
     if (!isUserLoggedIn() && !isPublicPath) {
-      // Not logged in, redirect to home
       navigate('/');
       return;
     }
     
+    // Only redirect non-public, non-root paths for users who haven't paid
     if (isUserLoggedIn() && !hasUserPaid() && !isPublicPath) {
-      // Logged in but hasn't paid, redirect to payments
-      // But NOT if trying to go to home page
       navigate('/payments');
     }
   }, [navigate, location.pathname]);
