@@ -1,16 +1,14 @@
-
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
-import { CheckIcon, ArrowRight, LockIcon, BadgeDollarSign } from "lucide-react";
+import { CheckIcon, ArrowRight, LockIcon } from "lucide-react";
 import { hasUserPaid } from '@/utils/auth';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Payments = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState('lifetime');
   
@@ -55,7 +53,8 @@ const Payments = () => {
   };
 
   const returnToHome = () => {
-    navigate('/');
+    // Force navigation to home without relying on the router's history
+    window.location.href = '/';
   };
 
   return (
@@ -70,6 +69,7 @@ const Payments = () => {
             Purchase a subscription to unlock all SolanaBot features
           </CardDescription>
         </CardHeader>
+        
         <CardContent className="space-y-4">
           <Tabs defaultValue="lifetime" onValueChange={setSelectedPlan} className="w-full">
             <TabsList className="grid grid-cols-2 mb-4">
