@@ -7,12 +7,26 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import { Crosshair, Play, Pause } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+
+interface SnipeBotFormValues {
+  devWalletAddress: string;
+}
 
 const SnipeBots = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const navigate = useNavigate();
   const { isVisible, animationProps, staggeredAnimationProps } = usePageTransition();
+  
+  const form = useForm<SnipeBotFormValues>({
+    defaultValues: {
+      devWalletAddress: '',
+    }
+  });
   
   useEffect(() => {
     const user = localStorage.getItem('user');
@@ -23,11 +37,30 @@ const SnipeBots = () => {
   }, [navigate]);
   
   const handleToggleBot = () => {
-    setIsActive(!isActive);
-    toast({
-      title: isActive ? "Bot Stopped" : "Bot Started",
-      description: `Snipe Bot has been ${isActive ? "deactivated" : "activated"}.`
-    });
+    const devWalletAddress = form.getValues().devWalletAddress;
+    
+    if (isActive) {
+      setIsActive(false);
+      toast({
+        title: "Bot Stopped",
+        description: "Snipe Bot has been deactivated."
+      });
+    } else {
+      if (!devWalletAddress.trim()) {
+        toast({
+          title: "Missing Information",
+          description: "Please enter a developer wallet address to snipe.",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      setIsActive(true);
+      toast({
+        title: "Bot Started",
+        description: `Snipe Bot is now monitoring developer wallet: ${devWalletAddress.slice(0, 6)}...${devWalletAddress.slice(-4)}`
+      });
+    }
   };
 
   return (
@@ -62,7 +95,31 @@ const SnipeBots = () => {
           <div {...animationProps}>
             <Card className="border backdrop-blur-sm bg-black/30 glass-dark min-h-[400px]">
               <CardContent className="p-6">
-                {/* Empty frame for future content */}
+                <Form {...form}>
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="devWalletAddress"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-medium">Snipe Dev Wallet</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Enter developer wallet address to snipe their new tokens" 
+                              className="bg-background/50 backdrop-blur-sm focus:ring-2 focus:ring-solana/50" 
+                              disabled={isActive}
+                              {...field}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Monitor this developer address and automatically snipe newly created tokens when they deploy on pump.fun
+                    </p>
+                  </div>
+                </Form>
               </CardContent>
             </Card>
           </div>
