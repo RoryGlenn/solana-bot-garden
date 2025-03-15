@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -59,8 +58,8 @@ const Payments = () => {
 
   const returnToHome = () => {
     console.log('Returning to home');
-    // Completely bypass the React Router to avoid any redirection logic
-    window.location.replace('/');
+    // Force a complete page reload to ensure all state is reset
+    window.location.href = '/';
   };
 
   return (

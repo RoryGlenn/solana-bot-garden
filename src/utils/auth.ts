@@ -6,7 +6,10 @@ export const hasUserPaid = () => {
     if (!userString) return false;
     
     const user = JSON.parse(userString);
-    return user.subscription && user.subscription.active === true;
+    // Explicitly return false if subscription is undefined or null
+    if (!user.subscription) return false;
+    
+    return user.subscription.active === true;
   } catch (error) {
     console.error('Error checking payment status:', error);
     return false;

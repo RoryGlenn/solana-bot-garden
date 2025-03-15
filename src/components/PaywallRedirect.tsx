@@ -19,7 +19,7 @@ const PaywallRedirect = ({ children }: PaywallRedirectProps) => {
     console.log('Is user logged in:', isUserLoggedIn());
     console.log('Has user paid:', hasUserPaid());
     
-    // If we're on a public path, never redirect
+    // If we're on a public path, always allow access without any redirection
     if (publicPaths.includes(location.pathname)) {
       console.log('On public path, allowing access');
       return;
