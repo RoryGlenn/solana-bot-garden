@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import { CheckIcon, ArrowRight, LockIcon } from "lucide-react";
-import { hasUserPaid } from '@/utils/auth';
+import { hasUserPaid, isUserLoggedIn } from '@/utils/auth';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Payments = () => {
@@ -16,8 +16,7 @@ const Payments = () => {
     console.log('Payments page loaded');
     
     // Check if user is already logged in
-    const user = localStorage.getItem('user');
-    if (!user) {
+    if (!isUserLoggedIn()) {
       console.log('User not logged in, redirecting to signup');
       // If not logged in, navigate to signup first
       navigate('/signup');
@@ -47,6 +46,8 @@ const Payments = () => {
       };
       localStorage.setItem('user', JSON.stringify(user));
       
+      console.log('Payment successful, updating user data:', user);
+      
       toast({
         title: "Payment Successful",
         description: `Thank you for your purchase! Your ${selectedPlan} subscription is now active.`,
@@ -58,8 +59,7 @@ const Payments = () => {
 
   const returnToHome = () => {
     console.log('Returning to home');
-    // Force a complete page reload to ensure all state is reset
-    window.location.href = '/';
+    navigate('/');
   };
 
   return (
