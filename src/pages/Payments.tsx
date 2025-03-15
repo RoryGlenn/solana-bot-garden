@@ -14,9 +14,12 @@ const Payments = () => {
   const [selectedPlan, setSelectedPlan] = useState('lifetime');
   
   useEffect(() => {
+    console.log('Payments page loaded');
+    
     // Check if user is already logged in
     const user = localStorage.getItem('user');
     if (!user) {
+      console.log('User not logged in, redirecting to signup');
       // If not logged in, navigate to signup first
       navigate('/signup');
       return;
@@ -24,6 +27,7 @@ const Payments = () => {
     
     // If user has already paid, redirect to dashboard
     if (hasUserPaid()) {
+      console.log('User has paid, redirecting to dashboard');
       navigate('/dashboard');
     }
   }, [navigate]);
@@ -54,8 +58,9 @@ const Payments = () => {
   };
 
   const returnToHome = () => {
-    // Use a direct location change to bypass the router's history and any potential redirect logic
-    window.location.href = '/';
+    console.log('Returning to home');
+    // Completely bypass the React Router to avoid any redirection logic
+    window.location.replace('/');
   };
 
   return (

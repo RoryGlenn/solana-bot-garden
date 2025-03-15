@@ -10,26 +10,37 @@ interface PaywallRedirectProps {
 const PaywallRedirect = ({ children }: PaywallRedirectProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  
+  // Define public paths that don't require authentication or payment
   const publicPaths = ['/', '/signup', '/payments'];
   
   useEffect(() => {
-    // If we're on the root path ('/'), never redirect
-    if (location.pathname === '/') {
+    console.log('Current path:', location.pathname);
+    console.log('Is user logged in:', isUserLoggedIn());
+    console.log('Has user paid:', hasUserPaid());
+    
+    // If we're on a public path, never redirect
+    if (publicPaths.includes(location.pathname)) {
+      console.log('On public path, allowing access');
       return;
     }
     
-    const isPublicPath = publicPaths.includes(location.pathname);
-    
-    // Only redirect non-public paths for users who aren't logged in
-    if (!isUserLoggedIn() && !isPublicPath) {
+    // If user is not logged in, redirect to home only if on a protected path
+    if (!isUserLoggedIn()) {
+      console.log('User not logged in, redirecting to home');
       navigate('/');
       return;
     }
     
-    // Only redirect non-public, non-root paths for users who haven't paid
-    if (isUserLoggedIn() && !hasUserPaid() && !isPublicPath) {
+    // If user is logged in but hasn't paid, redirect to payments only if on a protected path
+    if (isUserLoggedIn() && !hasUserPaid()) {
+      console.log('User logged in but not paid, redirecting to payments');
       navigate('/payments');
+      return;
     }
+    
+    // User is logged in and has paid, allow access to any page
+    console.log('User logged in and paid, allowing access');
   }, [navigate, location.pathname]);
   
   return <>{children}</>;
